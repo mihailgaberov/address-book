@@ -1,0 +1,42 @@
+{
+  "name": "address-book",
+  "version": "1.0.0",
+  "description": "Client side address book",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mihailgaberov/address-book.git"
+  },
+  "keywords": [
+    "client",
+    "side",
+    "address",
+    "book",
+    "html",
+    "javascript",
+    "css"
+  ],
+  "author": "Mihail Gaberov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mihailgaberov/address-book/issues"
+  },
+  "homepage": "https://github.com/mihailgaberov/address-book#readme",
+  "devDependencies": {
+    "angular": "^1.5.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-jshint": "^2.0.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "jshint": "^2.9.1",
+    "lodash": "^4.6.1"
+  }
+}
