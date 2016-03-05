@@ -8,17 +8,14 @@ var gulp = require('gulp'),
 	rename = require('gulp-rename'),
 	sass = require('gulp-sass');
 
-
 var input = {
 		'styles': 'src/styles/**/*.scss',
 		'scripts': 'src/scripts/**/*.js'
 	},
-
 	output = {
 		'styles': 'dist/styles',
 		'scripts': 'dist/scripts'
 	};
-
 
 // Default task
 gulp.task('default', function () {
