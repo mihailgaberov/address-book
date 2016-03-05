@@ -1,7 +1,6 @@
 // Load gulp packages
 var gulp = require('gulp'),
 	concat = require('gulp-concat'),
-	jshint = require('gulp-jshint'),
 	uglify = require('gulp-uglify'),
 	cssnano = require('gulp-cssnano'),
 	notify = require('gulp-notify'),
@@ -37,8 +36,6 @@ gulp.task('styles', function () {
 // Deploy the scripts
 gulp.task('scripts', function () {
 	return gulp.src(input.scripts)
-		.pipe(jshint('.jshintrc'))
-		.pipe(jshint.reporter('default'))
 		.pipe(concat('main.js'))
 		.pipe(gulp.dest(output.scripts))
 		.pipe(rename({suffix: '.min'}))
