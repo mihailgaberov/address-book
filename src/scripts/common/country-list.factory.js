@@ -1,4 +1,4 @@
-angular.module('address-book').factory('CountryListFactory', ['country-list', function(countryListService) {
+angular.module('address-book').factory('CountryListFactory', [function() {
 	'use strict';
 
 
@@ -12,6 +12,6 @@ angular.module('address-book').factory('CountryListFactory', ['country-list', fu
 
 
 	return {
-		getCountryList: getCountryList()
+		getCountryList: getCountryList
 	};
 }]);
