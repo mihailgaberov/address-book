@@ -1,0 +1,26 @@
+<form id="address-book-form" ng-submit="fc.submitForm()">
+    <div class="form-item">
+        <label for="first-name">First Name:</label>
+        <input type="text" class="text-input" required id="first-name" ng-model="firstName" name="first-name" placeholder="Please enter first name" />
+    </div>
+    <div class="form-item">
+        <label>Last Name:</label>
+        <input type="text" class="text-input" required id="last-name" ng-model="lastName" name="last-name" placeholder="Please enter last name" />
+    </div>
+    <div class="form-item">
+        <label for="email">Email:</label>
+        <input type="email" class="text-input" required id="email" ng-model="email" name="email" placeholder="Please enter vali email address" />
+    </div>
+    <div class="form-item">
+        <label for="country">Country:</label>
+        <select id="country" name="country" class="dropdown-input" required ng-model="country">
+            <option value="" selected>Please choose country</option>
+            <option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+        </select>
+    </div>
+    <div class="form-item buttons">
+        <button type="reset">Reset</button>
+        <button type="submit">Submit</button>
+    </div>
+    <input type="hidden" id="record-id" name="record-id" ng-model="recordId" ng-init="recordId.value=0" value="0" />
+</form>

@@ -1,18 +1,23 @@
 angular.module('address-book').factory('CountryListFactory', [function() {
 	'use strict';
 
-	var arrCountries = [];
+	var objCountryList = {};
 
 	var setCountryList = function(countries) {
-		arrCountries = countries;
+		objCountryList = countries;
 	};
 
 	var getCountryList = function() {
-		return arrCountries;
+		return objCountryList.getData();
+	};
+
+	var getNameByCode = function(code) {
+		return objCountryList.getName(code);
 	};
 
 	return {
 		getCountryList: getCountryList,
-		setCountryList: setCountryList
+		setCountryList: setCountryList,
+		getNameByCode: getNameByCode
 	};
 }]);

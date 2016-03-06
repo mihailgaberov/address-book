@@ -26,8 +26,8 @@
         <div id="results-area" ng-controller="ResultsController">
             <results></results>
         </div>
-        <div id="form-area" ng-controller="FormController">
-            <form countries="countriesData"></form>
+        <div id="form-area">
+            <address-book-form></address-book-form>
         </div>
     </section>
 
@@ -44,7 +44,8 @@
     <script src="dist/scripts/app.js"></script>
 
     <script src="src/scripts/common/country-list.factory.js"></script>
-    <script src="src/scripts/modules/form/form.js"></script>
+    <script src="src/scripts/common/result-entry.factory.js"></script>
+    <script src="src/scripts/modules/form/address-book-form.js"></script>
     <script src="src/scripts/modules/results/results.js"></script>
     </body>
 </html>

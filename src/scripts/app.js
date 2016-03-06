@@ -7,5 +7,6 @@ abApp.config(['localStorageServiceProvider', function (localStorageServiceProvid
 abApp.run(['CountryListFactory', function(CountryListFactory){
 	// Get the counties data
 	var cl = require('country-list')();
-	CountryListFactory.setCountryList(cl.getData());
+	//CountryListFactory.setCountryList(cl.getData());
+	CountryListFactory.setCountryList(cl);
 }]);
