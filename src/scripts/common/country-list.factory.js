@@ -1,7 +1,6 @@
 angular.module('address-book').factory('CountryListFactory', [function() {
 	'use strict';
 
-
 	var getCountryList = function() {
 		return [
 			{ code: 'bg', name: 'Bulgaria'},

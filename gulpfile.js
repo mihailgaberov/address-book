@@ -1,5 +1,7 @@
 // Load gulp packages
 var gulp = require('gulp'),
+	browserify = require('browserify'),
+	source = require('vinyl-source-stream'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
 	cssnano = require('gulp-cssnano'),
@@ -18,7 +20,16 @@ var input = {
 
 // Default task
 gulp.task('default', function () {
-	gulp.start('styles', 'scripts');
+	gulp.start('styles', 'scripts', 'browserify');
+});
+
+// Browserify
+gulp.task('browserify', function() {
+	return browserify('./src/scripts/app.js')
+		.bundle()
+		.pipe(source('bundle.js'))
+		.pipe(gulp.dest('./dist/scripts'))
+		.pipe(notify({message: 'Browserify task complete'}));
 });
 
 // Deploy the styles
