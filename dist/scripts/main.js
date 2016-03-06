@@ -34,35 +34,41 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 		getNameByCode: getNameByCode
 	};
 }]);
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', function(localStorageService) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$rootScope', function (localStorageService, $rootScope) {
 	'use strict';
 
-	var entryId;
-	/**
-	 * Initialize the local stogare index in
-	 */
-	var init = function () {
-			// initialize the storage index
+	var entryId = localStorageService.get("index");
+
+	var addEntry = function (entry) {
+		if (localStorageService.isSupported) {
 			if (!entryId) {
-				localStorageService.set("address-book:id", entryId = 1);
+				localStorageService.set("index", entryId = 1);
 			}
-	};
 
-	var addEntry = function(entry) {
-		init();
+			entry.id = entryId;
+			localStorageService.set('entry:' + entryId, entry);
+			localStorageService.set("index", ++entryId);
 
-		if(localStorageService.isSupported) {
-				localStorageService.set('address-book-entry:' + entryId, entry);
-				localStorageService.set("address-book:index", ++entryId);
+			$rootScope.$broadcast('entryAdded', entry);
 		}
 	};
 
-	var getEntry = function(id) {
+	var getEntry = function (id) {
 
 	};
 
-	var getAllEntries = function() {
-		console.log('>>> getAllEntries');
+	var getAllEntries = function () {
+		var lcLength = localStorageService.length();
+		if (lcLength - 1) {
+			var arrAddressBookList = [], i, keys = localStorageService.keys();
+
+			for (i = 0; i < keys.length; i++) {
+				if (/entry.\d+/.test(keys[i])) {
+					arrAddressBookList.push(localStorageService.get(keys[i]));
+				}
+			}
+		}
+		return arrAddressBookList;
 	};
 
 	return {
@@ -70,49 +76,92 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		getAllEntries: getAllEntries
 	};
 }]);
+angular.module('address-book').factory('UiFactory', [function () {
+	'use strict';
+
+	var addEntryToUI = function (entry) {
+		console.log('>>> add entry', entry);
+		var $tr = document.createElement("tr"), $td, key;
+
+		for (key in entry) {
+			if (entry.hasOwnProperty(key)) {
+				$td = document.createElement("td");
+				$td.appendChild(document.createTextNode(entry[key]));
+				$tr.appendChild($td);
+			}
+		}
+
+		$td = document.createElement("td");
+		$td.innerHTML = '<a data-op="edit" data-id="' + entry.id + '">Edit</a> | <a data-op="delete" data-id="' + entry.id + '">Delete</a>';
+		$tr.appendChild($td);
+		$tr.setAttribute("id", "address-book-entry-" + entry.id);
+
+		document.querySelectorAll('#address-book-table')[0].appendChild($tr);
+	};
+
+	var showAll = function (records) {
+		console.log('>>> show all records: ', records);
+		//addEntryToUI(records[0]);
+		console.log(document.querySelectorAll('#address-book-table'));
+		//if (records !== undefined) {
+		//	for (var i = 0; i < records.length; i++) {
+		//		this.addEntryToUI(records[i]);
+		//	}
+		//}
+	};
+
+	return {
+		addEntryToUI: addEntryToUI,
+		showAll: showAll
+	};
+}]);
 angular.module('address-book')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
-		function($scope, CountryListFactory, ResultEntryFactory) {
+		function ($scope, CountryListFactory, ResultEntryFactory) {
 
-	this.countriesData = CountryListFactory.getCountryList();
+			this.countriesData = CountryListFactory.getCountryList();
 
-	this.submitForm = function () {
-
-		console.log(">>>>>>entry.id: ", $scope.recordId);
-		var entry = {
-			'id': $scope.recordId,
-			'firstName': $scope.firstName,
-			'lastName': $scope.lastName,
-			'email': $scope.email,
-			'country': CountryListFactory.getNameByCode($scope.country)
-		};
+			this.submitForm = function () {
+				var entry = {
+					'firstName': $scope.firstName,
+					'lastName': $scope.lastName,
+					'email': $scope.email,
+					'country': CountryListFactory.getNameByCode($scope.country)
+				};
 
 
-		if (entry.id === 0) {
-			ResultEntryFactory.addEntry(entry);
-		} else {
-			console.log(">>>>> edit");
-		}
-	}
+				if ($scope.recordId.value === 0) {
+					ResultEntryFactory.addEntry(entry);
+				} else {
+					console.log(">>>>> edit");
+				}
+			}
 
-	}])
-	.directive('addressBookForm', function() {
+		}])
+	.directive('addressBookForm', function () {
 		return {
 			controller: 'FormController',
 			controllerAs: 'fc',
 			restrict: 'E',
 			scope: {},
 			templateUrl: 'views/form/address-book-form.html',
-			link: function(scope, element, attrs, controller) {
+			link: function (scope, element, attrs, controller) {
 				scope.countries = controller.countriesData;
 			}
 		};
 	});
-angular.module('address-book').controller('ResultsController', ['$scope', 'ResultEntryFactory', function($scope, ResultEntryFactory) {
-	$scope.entries = ResultEntryFactory.getAllEntries();
+angular.module('address-book')
+	.controller('ResultsController', ['$scope', '$rootScope', 'UiFactory', 'ResultEntryFactory',
+		function ($scope, $rootScope, UiFactory, ResultEntryFactory) {
 
-	}])
-	.directive('results', function() {
+			UiFactory.showAll(ResultEntryFactory.getAllEntries());
+
+			$rootScope.$on('entryAdded', function (e, arg) {
+				UiFactory.addEntryToUI(arg);
+			});
+
+		}])
+	.directive('results', function () {
 		return {
 			restrict: 'E',
 			scope: {},

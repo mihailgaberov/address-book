@@ -1,8 +1,15 @@
-angular.module('address-book').controller('ResultsController', ['$scope', 'ResultEntryFactory', function($scope, ResultEntryFactory) {
-	$scope.entries = ResultEntryFactory.getAllEntries();
+angular.module('address-book')
+	.controller('ResultsController', ['$scope', '$rootScope', 'UiFactory', 'ResultEntryFactory',
+		function ($scope, $rootScope, UiFactory, ResultEntryFactory) {
 
-	}])
-	.directive('results', function() {
+			UiFactory.showAll(ResultEntryFactory.getAllEntries());
+
+			$rootScope.$on('entryAdded', function (e, arg) {
+				UiFactory.addEntryToUI(arg);
+			});
+
+		}])
+	.directive('results', function () {
 		return {
 			restrict: 'E',
 			scope: {},
