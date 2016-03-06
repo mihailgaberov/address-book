@@ -21,10 +21,14 @@
         your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <section id="main-wrapper" ng-controller="FormController">
+    <section id="main-wrapper">
         <header><h1>Address Book</h1></header>
-        <div results></div>
-        <div form></div>
+        <div class="results" ng-controller="ResultsController">
+            <results></results>
+        </div>
+        <div class="form" ng-controller="FormController">
+            <form countries="countriesData"></form>
+        </div>
     </section>
 
     <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>-->
@@ -32,12 +36,13 @@
     <script src="node_modules/angular/angular.js"></script>
     <!--<script src="node_modules/angular-local-storage/dist/angular-local-storage.min.js"></script>-->
     <script src="node_modules/angular-local-storage/dist/angular-local-storage.js"></script>
-    <script src="dist/scripts/bundle.js"></script>
 
     <!--<script src="node_modules/country-list/country-list.js"></script>-->
 
     <!--<script src="dist/scripts/main.min.js"></script>-->
-    <script src="src/scripts/app.js"></script>
+    <!--<script src="src/scripts/app.js"></script>-->
+    <script src="dist/scripts/app.js"></script>
+
     <script src="src/scripts/common/country-list.factory.js"></script>
     <script src="src/scripts/modules/form/form.js"></script>
     <script src="src/scripts/modules/results/results.js"></script>

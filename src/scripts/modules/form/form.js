@@ -1,9 +1,14 @@
-abApp.controller('FormController', ['$scope', 'CountryListFactory', function($scope, CountryListFactory) {
+angular.module('address-book').controller('FormController', ['$scope', 'CountryListFactory', function($scope, CountryListFactory) {
+
+	$scope.countriesData = CountryListFactory.getCountryList();
 
 	}])
 	.directive('form', function() {
 		return {
-			scope: {},
+			restrict: 'E',
+			scope: {
+				countries: "="
+			},
 			templateUrl: 'views/form/form.html'
 		};
 	});

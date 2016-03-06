@@ -27,7 +27,7 @@ gulp.task('default', function () {
 gulp.task('browserify', function() {
 	return browserify('./src/scripts/app.js')
 		.bundle()
-		.pipe(source('bundle.js'))
+		.pipe(source('app.js'))
 		.pipe(gulp.dest('./dist/scripts'))
 		.pipe(notify({message: 'Browserify task complete'}));
 });

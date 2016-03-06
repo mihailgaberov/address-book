@@ -15,10 +15,7 @@
         <label for="country">Country:</label>
         <select id="country" name="country">
             <option value="" selected>Please choose country</option>
-            <option value="bg">Bulgaria</option>
-            <option value="sw">Sweden</option>
-            <option value="no">Norway</option>
-            <option value="fi">Finland</option>
+            <option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
         </select>
     </div>
     <div class="form-item button">
