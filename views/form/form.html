@@ -1,19 +1,19 @@
 <form id="address-book-form">
     <div class="form-item">
         <label for="first-name">First Name:</label>
-        <input type="text" class="text-input" required id="first-name" name="first-name" />
+        <input type="text" class="text-input" required id="first-name" name="first-name" placeholder="Please enter first name" />
     </div>
     <div class="form-item">
         <label>Last Name:</label>
-        <input type="text" class="text-input" required id="last-name" name="last-name" />
+        <input type="text" class="text-input" required id="last-name" name="last-name" placeholder="Please enter last name" />
     </div>
     <div class="form-item">
         <label for="email">Email:</label>
-        <input type="email" class="text-input" required id="email" name="email" />
+        <input type="email" class="text-input" required id="email" name="email" placeholder="Please enter vali email address" />
     </div>
     <div class="form-item">
         <label for="country">Country:</label>
-        <select id="country" name="country" class="dropdown-input">
+        <select id="country" name="country" class="dropdown-input" required>
             <option value="" selected>Please choose country</option>
             <option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
         </select>
