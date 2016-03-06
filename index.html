@@ -23,46 +23,8 @@
 
     <section id="main-wrapper">
         <header><h1>Address Book</h1></header>
-        <table id="address-book-table">
-            <tr id="header">
-                <th>No</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>County</th>
-                <th>Options</th>
-            </tr>
-        </table>
-
-        <form id="address-book-form">
-            <div class="form-item text-input">
-                <label for="first-name">First Name:</label>
-                <input type="text" required id="first-name" name="first-name" />
-            </div>
-            <div class="form-item text-input">
-                <label>Last Name:</label>
-                <input type="text" required id="last-name" name="last-name" />
-            </div>
-            <div class="form-item text-input">
-                <label for="email">Email:</label>
-                <input type="email" required id="email" name="email" />
-            </div>
-            <div class="form-item dropdown-input">
-                <label for="country">Country:</label>
-                <select id="country" name="country">
-                    <option value="" selected>Please choose country</option>
-                    <option value="bg">Bulgaria</option>
-                    <option value="sw">Sweden</option>
-                    <option value="no">Norway</option>
-                    <option value="fi">Finland</option>
-                </select>
-            </div>
-            <div class="form-item button">
-                <button type="submit">Submit</button>
-                <button type="reset">Reset</button>
-            </div>
-        </form>
-        <input type="hidden" id="record-id" name="record-id" />
+        <div results></div>
+        <div form></div>
     </section>
 
     <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>-->
@@ -70,10 +32,12 @@
     <script src="node_modules/angular/angular.js"></script>
     <!--<script src="node_modules/angular-local-storage/dist/angular-local-storage.min.js"></script>-->
     <script src="node_modules/angular-local-storage/dist/angular-local-storage.js"></script>
-    <script src="node_modules/country-list/country-list.js"></script>
+    <!--<script src="node_modules/country-list/country-list.js"></script>-->
 
     <!--<script src="dist/scripts/main.min.js"></script>-->
     <script src="src/scripts/app.js"></script>
     <script src="src/scripts/common/country-list.factory.js"></script>
+    <script src="src/scripts/modules/form/form.js"></script>
+    <script src="src/scripts/modules/results/results.js"></script>
     </body>
 </html>

@@ -1,0 +1,29 @@
+<form id="address-book-form">
+    <div class="form-item text-input">
+        <label for="first-name">First Name:</label>
+        <input type="text" required id="first-name" name="first-name" />
+    </div>
+    <div class="form-item text-input">
+        <label>Last Name:</label>
+        <input type="text" required id="last-name" name="last-name" />
+    </div>
+    <div class="form-item text-input">
+        <label for="email">Email:</label>
+        <input type="email" required id="email" name="email" />
+    </div>
+    <div class="form-item dropdown-input">
+        <label for="country">Country:</label>
+        <select id="country" name="country">
+            <option value="" selected>Please choose country</option>
+            <option value="bg">Bulgaria</option>
+            <option value="sw">Sweden</option>
+            <option value="no">Norway</option>
+            <option value="fi">Finland</option>
+        </select>
+    </div>
+    <div class="form-item button">
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+    </div>
+    <input type="hidden" id="record-id" name="record-id" />
+</form>
