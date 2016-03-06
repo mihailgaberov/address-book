@@ -1,13 +1,37 @@
 #main-wrapper {
   font-size: 1.2em;
   font-family: Arial, Helvetica, sans-serif;
-  width: 500px;
+  width: 768px;
   margin: 0 auto;
   padding: 0; }
-  #main-wrapper #address-book-table {
-    border: 1px solid #003131;
-    color: white; }
-    #main-wrapper #address-book-table #header {
-      background-color: orange; }
+  #main-wrapper h1 {
+    text-align: center; }
+  #main-wrapper #results-area {
+    display: block;
+    margin-bottom: 20px; }
+    #main-wrapper #results-area #address-book-table {
+      border: 1px solid #003131;
+      color: black; }
+      #main-wrapper #results-area #address-book-table #header {
+        color: white;
+        background-color: orange; }
+      #main-wrapper #results-area #address-book-table td {
+        width: auto;
+        padding: 0 20px;
+        font-size: 0.8em; }
+        #main-wrapper #results-area #address-book-table td:last-child {
+          min-width: 100px; }
+  #main-wrapper #form-area {
+    display: block; }
+    #main-wrapper #form-area .form-item {
+      width: 730px;
+      margin-bottom: 20px; }
+      #main-wrapper #form-area .form-item .text-input {
+        width: 85%;
+        float: right;
+        line-height: 150%; }
+      #main-wrapper #form-area .form-item .dropdown-input {
+        margin-left: 25px;
+        width: 25%; }
 
 /*# sourceMappingURL=main.css.map */

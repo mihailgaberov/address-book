@@ -1,26 +1,26 @@
 <form id="address-book-form">
-    <div class="form-item text-input">
+    <div class="form-item">
         <label for="first-name">First Name:</label>
-        <input type="text" required id="first-name" name="first-name" />
+        <input type="text" class="text-input" required id="first-name" name="first-name" />
     </div>
-    <div class="form-item text-input">
+    <div class="form-item">
         <label>Last Name:</label>
-        <input type="text" required id="last-name" name="last-name" />
+        <input type="text" class="text-input" required id="last-name" name="last-name" />
     </div>
-    <div class="form-item text-input">
+    <div class="form-item">
         <label for="email">Email:</label>
-        <input type="email" required id="email" name="email" />
+        <input type="email" class="text-input" required id="email" name="email" />
     </div>
-    <div class="form-item dropdown-input">
+    <div class="form-item">
         <label for="country">Country:</label>
-        <select id="country" name="country">
+        <select id="country" name="country" class="dropdown-input">
             <option value="" selected>Please choose country</option>
             <option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
         </select>
     </div>
-    <div class="form-item button">
-        <button type="submit">Submit</button>
+    <div class="form-item">
         <button type="reset">Reset</button>
+        <button type="submit">Submit</button>
     </div>
     <input type="hidden" id="record-id" name="record-id" />
 </form>
