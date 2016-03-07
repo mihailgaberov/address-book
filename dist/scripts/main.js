@@ -2,14 +2,12 @@ var abApp = angular.module('address-book', ['LocalStorageModule']);
 
 abApp.config(['localStorageServiceProvider', function (localStorageServiceProvider) {
 	localStorageServiceProvider.setPrefix('address-book');
-}]);
-
-abApp.run(['CountryListFactory', function(CountryListFactory){
-	// Get the counties data
-	var cl = require('country-list')();
-	//CountryListFactory.setCountryList(cl.getData());
-	CountryListFactory.setCountryList(cl);
-}]);
+}]).constant('_', window._)
+	.run(['CountryListFactory', function (CountryListFactory) {
+		// Get the counties data
+		var cl = require('country-list')();
+		CountryListFactory.setCountryList(cl);
+	}]);
 
 angular.module('address-book').factory('CountryListFactory', [function() {
 	'use strict';
@@ -34,7 +32,7 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 		getNameByCode: getNameByCode
 	};
 }]);
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$rootScope', function (localStorageService, $rootScope) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', function (localStorageService) {
 	'use strict';
 
 	var entryId = localStorageService.get("index");
@@ -48,8 +46,6 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 			entry.id = entryId;
 			localStorageService.set('entry:' + entryId, entry);
 			localStorageService.set("index", ++entryId);
-
-			$rootScope.$broadcast('entryAdded', entry);
 		}
 	};
 
@@ -80,7 +76,6 @@ angular.module('address-book').factory('UiFactory', [function () {
 	'use strict';
 
 	var addEntryToUI = function (entry) {
-		console.log('>>> add entry', entry);
 		var $tr = document.createElement("tr"), $td, key;
 
 		for (key in entry) {
@@ -92,7 +87,7 @@ angular.module('address-book').factory('UiFactory', [function () {
 		}
 
 		$td = document.createElement("td");
-		$td.innerHTML = '<a data-op="edit" data-id="' + entry.id + '">Edit</a> | <a data-op="delete" data-id="' + entry.id + '">Delete</a>';
+		$td.innerHTML = '<a data-option="edit" data-id="' + entry.id + '">Edit</a> | <a data-option="delete" data-id="' + entry.id + '">Delete</a>';
 		$tr.appendChild($td);
 		$tr.setAttribute("id", "address-book-entry-" + entry.id);
 
@@ -100,14 +95,11 @@ angular.module('address-book').factory('UiFactory', [function () {
 	};
 
 	var showAll = function (records) {
-		console.log('>>> show all records: ', records);
-		//addEntryToUI(records[0]);
-		console.log(document.querySelectorAll('#address-book-table'));
-		//if (records !== undefined) {
-		//	for (var i = 0; i < records.length; i++) {
-		//		this.addEntryToUI(records[i]);
-		//	}
-		//}
+		if (!_.isUndefined(records) && records.length > 0) {
+			_.forEach(records, function (rec) {
+				addEntryToUI(rec);
+			});
+		}
 	};
 
 	return {
@@ -116,8 +108,8 @@ angular.module('address-book').factory('UiFactory', [function () {
 	};
 }]);
 angular.module('address-book')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
-		function ($scope, CountryListFactory, ResultEntryFactory) {
+	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory', 'UiFactory',
+		function ($scope, CountryListFactory, ResultEntryFactory, UiFactory) {
 
 			this.countriesData = CountryListFactory.getCountryList();
 
@@ -132,6 +124,7 @@ angular.module('address-book')
 
 				if ($scope.recordId.value === 0) {
 					ResultEntryFactory.addEntry(entry);
+					UiFactory.addEntryToUI(entry);
 				} else {
 					console.log(">>>>> edit");
 				}
@@ -151,20 +144,23 @@ angular.module('address-book')
 		};
 	});
 angular.module('address-book')
-	.controller('ResultsController', ['$scope', '$rootScope', 'UiFactory', 'ResultEntryFactory',
-		function ($scope, $rootScope, UiFactory, ResultEntryFactory) {
+	.controller('ResultsController', ['UiFactory', 'ResultEntryFactory',
+		function (UiFactory, ResultEntryFactory) {
 
-			UiFactory.showAll(ResultEntryFactory.getAllEntries());
-
-			$rootScope.$on('entryAdded', function (e, arg) {
-				UiFactory.addEntryToUI(arg);
-			});
+			this.getAllEntries = function () {
+				UiFactory.showAll(ResultEntryFactory.getAllEntries());
+			};
 
 		}])
 	.directive('results', function () {
 		return {
+			controller: 'ResultsController',
+			controllerAs: 'rc',
 			restrict: 'E',
 			scope: {},
-			templateUrl: 'views/results/results.html'
+			templateUrl: 'views/results/results.html',
+			link: function (scope, element, attrs, controller) {
+				controller.getAllEntries();
+			}
 		};
 	});
