@@ -4,6 +4,10 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 
 	var entryId = localStorageService.get("index");
 
+	var getKey = function(id) {
+		return 'entry:' + id;
+	};
+
 	var addEntry = function (entry) {
 		if (localStorageService.isSupported) {
 			if (!entryId) {
@@ -20,16 +24,21 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 
 	var deleteEntry = function (id, idx) {
 		if (confirm('Are you sure?')) {
-			var key = 'entry:' + id;
-			localStorageService.remove(key);
+			localStorageService.remove(getKey(id));
 			$rootScope.$broadcast(Events.REMOVE, idx);
 		}
 	};
 
 	var editEntry = function (id, idx) {
-		var key = 'entry:' + id;
-		var entry = localStorageService.get(key);
-		$rootScope.$broadcast(Events.UPDATE, entry);
+		var entry = localStorageService.get(getKey(id));
+		$rootScope.$broadcast(Events.EDIT, entry);
+	};
+
+	var updateEntry = function(id, entry) {
+		entry.id = id;
+		localStorageService.set(getKey(id), entry);
+		var allEntries = getAllEntries();
+		$rootScope.$broadcast(Events.UPDATE, allEntries);
 	};
 
 	var getAllEntries = function () {
@@ -50,6 +59,7 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		addEntry: addEntry,
 		getAllEntries: getAllEntries,
 		editEntry: editEntry,
+		updateEntry: updateEntry,
 		deleteEntry: deleteEntry
 	};
 }]);

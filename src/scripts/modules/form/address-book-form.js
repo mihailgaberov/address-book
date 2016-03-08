@@ -16,15 +16,26 @@ angular.module('address-book')
 				if ($scope.recordId.value === 0) {
 					ResultEntryFactory.addEntry(entry);
 				} else {
-					console.log(">>>>> update entry");
+					ResultEntryFactory.updateEntry($scope.recordId.value, entry);
 				}
-			}
 
-			$scope.$on(Events.UPDATE, function (e, arg) {
+				$scope.recordId.value = 0;
+				$scope.resetForm();
+			};
+
+			$scope.resetForm = function() {
+				$scope.firstName = '';
+				$scope.lastName = '';
+				$scope.email = '';
+				$scope.country = '';
+			};
+
+			$scope.$on(Events.EDIT, function (e, arg) {
 				$scope.firstName = arg.firstName;
 				$scope.lastName = arg.lastName;
 				$scope.email = arg.email;
 				$scope.country = CountryListFactory.getCodeByName(arg.country);
+				$scope.recordId.value = arg.id;
 			});
 
 		}])

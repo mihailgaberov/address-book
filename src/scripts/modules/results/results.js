@@ -1,6 +1,6 @@
 angular.module('address-book')
-	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
-		function (ResultEntryFactory, resolveData, $scope) {
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope', 'Events',
+		function (ResultEntryFactory, resolveData, $scope, Events) {
 
 			if (_.isUndefined(resolveData)) {
 				$scope.entries = [];
@@ -8,11 +8,17 @@ angular.module('address-book')
 				$scope.entries = resolveData;
 			}
 			
-			$scope.$on('addNewEntry', function(e, arg) {
+			$scope.$on(Events.ADD, function(e, arg) {
 				$scope.entries.push(arg);
 			});
 
-			$scope.$on('removeEntry', function(e, arg) {
+			$scope.$on(Events.UPDATE, function(e, arg) {
+				arg.then(function (value) {
+					$scope.entries = value;
+				});
+			});
+
+			$scope.$on(Events.REMOVE, function(e, arg) {
 				$scope.entries.splice(arg, 1);
 			});
 
