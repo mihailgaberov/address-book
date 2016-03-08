@@ -8,12 +8,12 @@ angular.module('address-book')
 				$scope.entries.push(arg);
 			});
 
-
 			$scope.editEntry = function (entryId) {
-				console.log('>>> edit entry', entryId);
+				ResultEntryFactory.editEntry(entryId);
 			};
+
 			$scope.deleteEntry = function (entryId) {
-				console.log('>>> detele entry', entryId);
+				ResultEntryFactory.deleteEntry(entryId);
 			};
 
 		}

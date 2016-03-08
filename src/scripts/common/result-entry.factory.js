@@ -17,6 +17,15 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		$rootScope.$broadcast('addNewEntry', entry);
 	};
 
+	var deleteEntry = function (id) {
+		console.log('>>> delete entryId: ', id);
+
+	};
+
+	var editEntry = function (id) {
+		console.log('>>> edit entryId: ', id);
+	};
+
 	var getAllEntries = function () {
 		var lcLength = localStorageService.length();
 		if (lcLength - 1) {
@@ -33,6 +42,8 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 
 	return {
 		addEntry: addEntry,
-		getAllEntries: getAllEntries
+		getAllEntries: getAllEntries,
+		editEntry: editEntry,
+		deleteEntry: deleteEntry
 	};
 }]);

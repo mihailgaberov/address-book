@@ -64,6 +64,15 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		$rootScope.$broadcast('addNewEntry', entry);
 	};
 
+	var deleteEntry = function (id) {
+		console.log('>>> delete entryId: ', id);
+
+	};
+
+	var editEntry = function (id) {
+		console.log('>>> edit entryId: ', id);
+	};
+
 	var getAllEntries = function () {
 		var lcLength = localStorageService.length();
 		if (lcLength - 1) {
@@ -80,9 +89,31 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 
 	return {
 		addEntry: addEntry,
-		getAllEntries: getAllEntries
+		getAllEntries: getAllEntries,
+		editEntry: editEntry,
+		deleteEntry: deleteEntry
 	};
 }]);
+angular.module('address-book')
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
+		function (ResultEntryFactory, resolveData, $scope) {
+
+			$scope.entries = resolveData;
+
+			$scope.$on('addNewEntry', function(e, arg) {
+				$scope.entries.push(arg);
+			});
+
+			$scope.editEntry = function (entryId) {
+				ResultEntryFactory.editEntry(entryId);
+			};
+
+			$scope.deleteEntry = function (entryId) {
+				ResultEntryFactory.deleteEntry(entryId);
+			};
+
+		}
+	]);
 angular.module('address-book')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
 		function ($scope, CountryListFactory, ResultEntryFactory) {
@@ -118,23 +149,3 @@ angular.module('address-book')
 			}
 		};
 	});
-angular.module('address-book')
-	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
-		function (ResultEntryFactory, resolveData, $scope) {
-
-			$scope.entries = resolveData;
-
-			$scope.$on('addNewEntry', function(e, arg) {
-				$scope.entries.push(arg);
-			});
-
-
-			$scope.editEntry = function (entryId) {
-				console.log('>>> edit entry', entryId);
-			};
-			$scope.deleteEntry = function (entryId) {
-				console.log('>>> detele entry', entryId);
-			};
-
-		}
-	]);
