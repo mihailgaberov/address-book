@@ -1,6 +1,6 @@
 angular.module('address-book')
-	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope', 'Events',
-		function (ResultEntryFactory, resolveData, $scope, Events) {
+	.controller('AddressesListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
+		function (AddressEntryFactory, resolveData, $scope, Events) {
 
 			if (_.isUndefined(resolveData)) {
 				$scope.entries = [];
@@ -21,11 +21,11 @@ angular.module('address-book')
 			});
 
 			$scope.editEntry = function (entryId, idx) {
-				ResultEntryFactory.editEntry(entryId, idx);
+				AddressEntryFactory.editEntry(entryId, idx);
 			};
 
 			$scope.deleteEntry = function (entryId, idx) {
-				ResultEntryFactory.deleteEntry(entryId, idx);
+				AddressEntryFactory.deleteEntry(entryId, idx);
 			};
 
 		}

@@ -1,4 +1,4 @@
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
+angular.module('address-book').factory('AddressEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
 	function (localStorageService, $q, $rootScope, Events) {
 	'use strict';
 

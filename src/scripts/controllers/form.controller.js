@@ -1,6 +1,6 @@
 angular.module('address-book')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory', 'Events',
-		function ($scope, CountryListFactory, ResultEntryFactory, Events) {
+	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
+		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
 
 			this.countriesData = CountryListFactory.getCountryList();
 
@@ -14,9 +14,9 @@ angular.module('address-book')
 
 
 				if ($scope.recordId.value === 0) {
-					ResultEntryFactory.addEntry(entry);
+					AddressEntryFactory.addEntry(entry);
 				} else {
-					ResultEntryFactory.updateEntry($scope.recordId.value, entry);
+					AddressEntryFactory.updateEntry($scope.recordId.value, entry);
 				}
 
 				$scope.recordId.value = 0;
