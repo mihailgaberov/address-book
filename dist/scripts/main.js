@@ -64,12 +64,13 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		$rootScope.$broadcast('addNewEntry', entry);
 	};
 
-	var deleteEntry = function (id) {
-		console.log('>>> delete entryId: ', id);
-
+	var deleteEntry = function (id, idx) {
+		var key = 'entry:' + id;
+		localStorageService.remove(key);
+		$rootScope.$broadcast('removeEntry', idx);
 	};
 
-	var editEntry = function (id) {
+	var editEntry = function (id, idx) {
 		console.log('>>> edit entryId: ', id);
 	};
 
@@ -94,26 +95,6 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		deleteEntry: deleteEntry
 	};
 }]);
-angular.module('address-book')
-	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
-		function (ResultEntryFactory, resolveData, $scope) {
-
-			$scope.entries = resolveData;
-
-			$scope.$on('addNewEntry', function(e, arg) {
-				$scope.entries.push(arg);
-			});
-
-			$scope.editEntry = function (entryId) {
-				ResultEntryFactory.editEntry(entryId);
-			};
-
-			$scope.deleteEntry = function (entryId) {
-				ResultEntryFactory.deleteEntry(entryId);
-			};
-
-		}
-	]);
 angular.module('address-book')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
 		function ($scope, CountryListFactory, ResultEntryFactory) {
@@ -149,3 +130,31 @@ angular.module('address-book')
 			}
 		};
 	});
+angular.module('address-book')
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
+		function (ResultEntryFactory, resolveData, $scope) {
+
+			if (_.isUndefined(resolveData)) {
+				$scope.entries = [];
+			} else {
+				$scope.entries = resolveData;
+			}
+			
+			$scope.$on('addNewEntry', function(e, arg) {
+				$scope.entries.push(arg);
+			});
+
+			$scope.$on('removeEntry', function(e, arg) {
+				$scope.entries.splice(arg, 1);
+			});
+
+			$scope.editEntry = function (entryId, idx) {
+				ResultEntryFactory.editEntry(entryId, idx);
+			};
+
+			$scope.deleteEntry = function (entryId, idx) {
+				ResultEntryFactory.deleteEntry(entryId, idx);
+			};
+
+		}
+	]);

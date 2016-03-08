@@ -17,12 +17,13 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		$rootScope.$broadcast('addNewEntry', entry);
 	};
 
-	var deleteEntry = function (id) {
-		console.log('>>> delete entryId: ', id);
-
+	var deleteEntry = function (id, idx) {
+		var key = 'entry:' + id;
+		localStorageService.remove(key);
+		$rootScope.$broadcast('removeEntry', idx);
 	};
 
-	var editEntry = function (id) {
+	var editEntry = function (id, idx) {
 		console.log('>>> edit entryId: ', id);
 	};
 

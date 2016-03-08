@@ -14,8 +14,8 @@
         <td>{{ entry.country }}</td>
         <td>{{ entry.id }}</td>
         <td>
-            <a href ng-click="editEntry(entry.id)">Edit</a> |
-            <a href ng-click="deleteEntry(entry.id)">Delete</a>
+            <a href ng-click="editEntry(entry.id, $index)">Edit</a> |
+            <a href ng-click="deleteEntry(entry.id, $index)">Delete</a>
         </td>
     </tr>
 </table>
