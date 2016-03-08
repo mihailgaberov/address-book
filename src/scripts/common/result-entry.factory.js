@@ -18,9 +18,11 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 	};
 
 	var deleteEntry = function (id, idx) {
-		var key = 'entry:' + id;
-		localStorageService.remove(key);
-		$rootScope.$broadcast('removeEntry', idx);
+		if (confirm('Are you sure?')) {
+			var key = 'entry:' + id;
+			localStorageService.remove(key);
+			$rootScope.$broadcast('removeEntry', idx);
+		}
 	};
 
 	var editEntry = function (id, idx) {

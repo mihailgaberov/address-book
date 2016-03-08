@@ -65,9 +65,11 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 	};
 
 	var deleteEntry = function (id, idx) {
-		var key = 'entry:' + id;
-		localStorageService.remove(key);
-		$rootScope.$broadcast('removeEntry', idx);
+		if (confirm('Are you sure?')) {
+			var key = 'entry:' + id;
+			localStorageService.remove(key);
+			$rootScope.$broadcast('removeEntry', idx);
+		}
 	};
 
 	var editEntry = function (id, idx) {
@@ -95,6 +97,34 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		deleteEntry: deleteEntry
 	};
 }]);
+angular.module('address-book')
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
+		function (ResultEntryFactory, resolveData, $scope) {
+
+			if (_.isUndefined(resolveData)) {
+				$scope.entries = [];
+			} else {
+				$scope.entries = resolveData;
+			}
+			
+			$scope.$on('addNewEntry', function(e, arg) {
+				$scope.entries.push(arg);
+			});
+
+			$scope.$on('removeEntry', function(e, arg) {
+				$scope.entries.splice(arg, 1);
+			});
+
+			$scope.editEntry = function (entryId, idx) {
+				ResultEntryFactory.editEntry(entryId, idx);
+			};
+
+			$scope.deleteEntry = function (entryId, idx) {
+				ResultEntryFactory.deleteEntry(entryId, idx);
+			};
+
+		}
+	]);
 angular.module('address-book')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
 		function ($scope, CountryListFactory, ResultEntryFactory) {
@@ -130,31 +160,3 @@ angular.module('address-book')
 			}
 		};
 	});
-angular.module('address-book')
-	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
-		function (ResultEntryFactory, resolveData, $scope) {
-
-			if (_.isUndefined(resolveData)) {
-				$scope.entries = [];
-			} else {
-				$scope.entries = resolveData;
-			}
-			
-			$scope.$on('addNewEntry', function(e, arg) {
-				$scope.entries.push(arg);
-			});
-
-			$scope.$on('removeEntry', function(e, arg) {
-				$scope.entries.splice(arg, 1);
-			});
-
-			$scope.editEntry = function (entryId, idx) {
-				ResultEntryFactory.editEntry(entryId, idx);
-			};
-
-			$scope.deleteEntry = function (entryId, idx) {
-				ResultEntryFactory.deleteEntry(entryId, idx);
-			};
-
-		}
-	]);
