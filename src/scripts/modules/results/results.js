@@ -8,18 +8,16 @@ angular.module('address-book')
 				$scope.entries = resolveData;
 			}
 			
-			$scope.$on(Events.ADD, function(e, arg) {
-				$scope.entries.push(arg);
+			$scope.$on(Events.ADD, function(e, newEntry) {
+				$scope.entries.push(newEntry);
 			});
 
-			$scope.$on(Events.UPDATE, function(e, arg) {
-				arg.then(function (value) {
-					$scope.entries = value;
-				});
+			$scope.$on(Events.UPDATE, function(e, arrNewEntries) {
+				$scope.entries = arrNewEntries;
 			});
 
-			$scope.$on(Events.REMOVE, function(e, arg) {
-				$scope.entries.splice(arg, 1);
+			$scope.$on(Events.REMOVE, function(e, entryIdx) {
+				$scope.entries.splice(entryIdx, 1);
 			});
 
 			$scope.editEntry = function (entryId, idx) {

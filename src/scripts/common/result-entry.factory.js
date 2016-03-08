@@ -37,8 +37,9 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 	var updateEntry = function(id, entry) {
 		entry.id = id;
 		localStorageService.set(getKey(id), entry);
-		var allEntries = getAllEntries();
-		$rootScope.$broadcast(Events.UPDATE, allEntries);
+		getAllEntries().then(function(entries) {
+			$rootScope.$broadcast(Events.UPDATE, entries);
+		});
 	};
 
 	var getAllEntries = function () {
