@@ -30,12 +30,12 @@ angular.module('address-book')
 				$scope.country = '';
 			};
 
-			$scope.$on(Events.EDIT, function (e, arg) {
-				$scope.firstName = arg.firstName;
-				$scope.lastName = arg.lastName;
-				$scope.email = arg.email;
-				$scope.country = CountryListFactory.getCodeByName(arg.country);
-				$scope.recordId.value = arg.id;
+			$scope.$on(Events.EDIT, function (e, entry) {
+				$scope.firstName = entry.firstName;
+				$scope.lastName = entry.lastName;
+				$scope.email = entry.email;
+				$scope.country = CountryListFactory.getCodeByName(entry.country);
+				$scope.recordId.value = entry.id;
 			});
 
 		}])
