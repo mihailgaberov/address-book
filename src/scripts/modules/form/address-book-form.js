@@ -20,10 +20,10 @@ angular.module('address-book')
 				}
 
 				$scope.recordId.value = 0;
-				$scope.resetForm();
+				this.resetForm();
 			};
 
-			$scope.resetForm = function() {
+			this.resetForm = function() {
 				$scope.firstName = '';
 				$scope.lastName = '';
 				$scope.email = '';
