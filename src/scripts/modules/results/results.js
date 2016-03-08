@@ -3,7 +3,10 @@ angular.module('address-book')
 		function (ResultEntryFactory, resolveData, $scope) {
 
 			$scope.entries = resolveData;
-			console.log('>>> resolveData: ', resolveData);
+
+			$scope.$on('addNewEntry', function(e, arg) {
+				$scope.entries.push(arg);
+			});
 
 
 			$scope.editEntry = function (entryId) {

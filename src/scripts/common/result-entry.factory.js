@@ -1,4 +1,4 @@
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', function (localStorageService, $q) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', '$rootScope', function (localStorageService, $q, $rootScope) {
 	'use strict';
 
 	var entryId = localStorageService.get("index");
@@ -13,10 +13,8 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 			localStorageService.set('entry:' + entryId, entry);
 			localStorageService.set("index", ++entryId);
 		}
-	};
 
-	var getEntry = function (id) {
-
+		$rootScope.$broadcast('addNewEntry', entry);
 	};
 
 	var getAllEntries = function () {

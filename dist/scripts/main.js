@@ -45,7 +45,7 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 		getNameByCode: getNameByCode
 	};
 }]);
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', function (localStorageService, $q) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', '$rootScope', function (localStorageService, $q, $rootScope) {
 	'use strict';
 
 	var entryId = localStorageService.get("index");
@@ -60,10 +60,8 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 			localStorageService.set('entry:' + entryId, entry);
 			localStorageService.set("index", ++entryId);
 		}
-	};
 
-	var getEntry = function (id) {
-
+		$rootScope.$broadcast('addNewEntry', entry);
 	};
 
 	var getAllEntries = function () {
@@ -86,31 +84,6 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 	};
 }]);
 angular.module('address-book')
-	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
-		function (ResultEntryFactory, resolveData, $scope) {
-
-			$scope.entries = resolveData;
-			console.log('>>> resolveData: ', resolveData);
-
-
-			/*this.getAllEntries = function () {
-				UiFactory.showAll(ResultEntryFactory.getAllEntries());
-			};*/
-
-		}]);
-	/*.directive('results', function () {
-		return {
-			controller: 'ResultsController',
-			controllerAs: 'rc',
-			restrict: 'E',
-			//scope: {},
-			templateUrl: 'views/results/results.html',
-			link: function (scope, element, attrs, controller) {
-				controller.getAllEntries();
-			}
-		};
-	});*/
-angular.module('address-book')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
 		function ($scope, CountryListFactory, ResultEntryFactory) {
 
@@ -128,7 +101,7 @@ angular.module('address-book')
 				if ($scope.recordId.value === 0) {
 					ResultEntryFactory.addEntry(entry);
 				} else {
-					console.log(">>>>> edit");
+					console.log(">>>>> update entry");
 				}
 			}
 
@@ -145,3 +118,23 @@ angular.module('address-book')
 			}
 		};
 	});
+angular.module('address-book')
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
+		function (ResultEntryFactory, resolveData, $scope) {
+
+			$scope.entries = resolveData;
+
+			$scope.$on('addNewEntry', function(e, arg) {
+				$scope.entries.push(arg);
+			});
+
+
+			$scope.editEntry = function (entryId) {
+				console.log('>>> edit entry', entryId);
+			};
+			$scope.deleteEntry = function (entryId) {
+				console.log('>>> detele entry', entryId);
+			};
+
+		}
+	]);
