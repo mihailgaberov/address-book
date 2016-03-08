@@ -1,7 +1,20 @@
-var abApp = angular.module('address-book', ['LocalStorageModule']);
+var abApp = angular.module('address-book', ['LocalStorageModule', 'ngRoute']);
 
-abApp.config(['localStorageServiceProvider', function (localStorageServiceProvider) {
+abApp.config(['localStorageServiceProvider', '$routeProvider', function (localStorageServiceProvider, $routeProvider) {
 	localStorageServiceProvider.setPrefix('address-book');
+
+	$routeProvider
+		.when('/', {
+			templateUrl: 'views/results/results.html',
+			controller: 'ResultsController',
+			resolve: {
+				resolveData: ['ResultEntryFactory', function (ResultEntryFactory) {
+					return ResultEntryFactory.getAllEntries();
+				}]
+			}
+		})
+		.otherwise({redirectTo: '/'});
+
 }]).constant('_', window._)
 	.run(['CountryListFactory', function (CountryListFactory) {
 		// Get the counties data
@@ -32,7 +45,7 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 		getNameByCode: getNameByCode
 	};
 }]);
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', function (localStorageService) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', function (localStorageService, $q) {
 	'use strict';
 
 	var entryId = localStorageService.get("index");
@@ -64,7 +77,7 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 				}
 			}
 		}
-		return arrAddressBookList;
+		return $q.when(arrAddressBookList);
 	};
 
 	return {
@@ -72,44 +85,34 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 		getAllEntries: getAllEntries
 	};
 }]);
-angular.module('address-book').factory('UiFactory', [function () {
-	'use strict';
-
-	var addEntryToUI = function (entry) {
-		var $tr = document.createElement("tr"), $td, key;
-
-		for (key in entry) {
-			if (entry.hasOwnProperty(key)) {
-				$td = document.createElement("td");
-				$td.appendChild(document.createTextNode(entry[key]));
-				$tr.appendChild($td);
-			}
-		}
-
-		$td = document.createElement("td");
-		$td.innerHTML = '<a data-option="edit" data-id="' + entry.id + '">Edit</a> | <a data-option="delete" data-id="' + entry.id + '">Delete</a>';
-		$tr.appendChild($td);
-		$tr.setAttribute("id", "address-book-entry-" + entry.id);
-
-		document.querySelectorAll('#address-book-table')[0].appendChild($tr);
-	};
-
-	var showAll = function (records) {
-		if (!_.isUndefined(records) && records.length > 0) {
-			_.forEach(records, function (rec) {
-				addEntryToUI(rec);
-			});
-		}
-	};
-
-	return {
-		addEntryToUI: addEntryToUI,
-		showAll: showAll
-	};
-}]);
 angular.module('address-book')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory', 'UiFactory',
-		function ($scope, CountryListFactory, ResultEntryFactory, UiFactory) {
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
+		function (ResultEntryFactory, resolveData, $scope) {
+
+			$scope.entries = resolveData;
+			console.log('>>> resolveData: ', resolveData);
+
+
+			/*this.getAllEntries = function () {
+				UiFactory.showAll(ResultEntryFactory.getAllEntries());
+			};*/
+
+		}]);
+	/*.directive('results', function () {
+		return {
+			controller: 'ResultsController',
+			controllerAs: 'rc',
+			restrict: 'E',
+			//scope: {},
+			templateUrl: 'views/results/results.html',
+			link: function (scope, element, attrs, controller) {
+				controller.getAllEntries();
+			}
+		};
+	});*/
+angular.module('address-book')
+	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
+		function ($scope, CountryListFactory, ResultEntryFactory) {
 
 			this.countriesData = CountryListFactory.getCountryList();
 
@@ -124,7 +127,6 @@ angular.module('address-book')
 
 				if ($scope.recordId.value === 0) {
 					ResultEntryFactory.addEntry(entry);
-					UiFactory.addEntryToUI(entry);
 				} else {
 					console.log(">>>>> edit");
 				}
@@ -140,27 +142,6 @@ angular.module('address-book')
 			templateUrl: 'views/form/address-book-form.html',
 			link: function (scope, element, attrs, controller) {
 				scope.countries = controller.countriesData;
-			}
-		};
-	});
-angular.module('address-book')
-	.controller('ResultsController', ['UiFactory', 'ResultEntryFactory',
-		function (UiFactory, ResultEntryFactory) {
-
-			this.getAllEntries = function () {
-				UiFactory.showAll(ResultEntryFactory.getAllEntries());
-			};
-
-		}])
-	.directive('results', function () {
-		return {
-			controller: 'ResultsController',
-			controllerAs: 'rc',
-			restrict: 'E',
-			scope: {},
-			templateUrl: 'views/results/results.html',
-			link: function (scope, element, attrs, controller) {
-				controller.getAllEntries();
 			}
 		};
 	});

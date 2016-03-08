@@ -1,21 +1,17 @@
 angular.module('address-book')
-	.controller('ResultsController', ['UiFactory', 'ResultEntryFactory',
-		function (UiFactory, ResultEntryFactory) {
+	.controller('ResultsController', ['ResultEntryFactory', 'resolveData', '$scope',
+		function (ResultEntryFactory, resolveData, $scope) {
 
-			this.getAllEntries = function () {
-				UiFactory.showAll(ResultEntryFactory.getAllEntries());
+			$scope.entries = resolveData;
+			console.log('>>> resolveData: ', resolveData);
+
+
+			$scope.editEntry = function (entryId) {
+				console.log('>>> edit entry', entryId);
+			};
+			$scope.deleteEntry = function (entryId) {
+				console.log('>>> detele entry', entryId);
 			};
 
-		}])
-	.directive('results', function () {
-		return {
-			controller: 'ResultsController',
-			controllerAs: 'rc',
-			restrict: 'E',
-			scope: {},
-			templateUrl: 'views/results/results.html',
-			link: function (scope, element, attrs, controller) {
-				controller.getAllEntries();
-			}
-		};
-	});
+		}
+	]);

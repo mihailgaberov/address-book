@@ -7,4 +7,15 @@
         <th>No</th>
         <th>Options</th>
     </tr>
+    <tr ng-repeat="entry in entries">
+        <td>{{ entry.firstName }}</td>
+        <td>{{ entry.lastName }}</td>
+        <td>{{ entry.email }}</td>
+        <td>{{ entry.country }}</td>
+        <td>{{ entry.id }}</td>
+        <td>
+            <a href ng-click="editEntry(entry.id)">Edit</a> |
+            <a href ng-click="deleteEntry(entry.id)">Delete</a>
+        </td>
+    </tr>
 </table>

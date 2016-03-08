@@ -23,9 +23,8 @@
 
     <section id="main-wrapper">
         <header><h1>Address Book</h1></header>
-        <div id="results-area" ng-controller="ResultsController">
-            <results></results>
-        </div>
+        <div id="results-area" ng-view></div>
+
         <div id="form-area">
             <address-book-form></address-book-form>
         </div>
@@ -35,6 +34,8 @@
     <!--<script src="node_modules/angular/angular.min.js"></script>-->
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/lodash/lodash.min.js"></script>
+    <!--<script src="node_modules/angular-route/angular-route.min.js"></script>-->
+    <script src="node_modules/angular-route/angular-route.js"></script>
     <!--<script src="node_modules/angular-local-storage/dist/angular-local-storage.min.js"></script>-->
     <script src="node_modules/angular-local-storage/dist/angular-local-storage.js"></script>
 
@@ -43,7 +44,6 @@
     <script src="dist/scripts/app.js"></script>
     <script src="src/scripts/common/country-list.factory.js"></script>
     <script src="src/scripts/common/result-entry.factory.js"></script>
-    <script src="src/scripts/common/ui.factory.js"></script>
     <script src="src/scripts/modules/form/address-book-form.js"></script>
     <script src="src/scripts/modules/results/results.js"></script>
     </body>

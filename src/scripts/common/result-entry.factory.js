@@ -1,4 +1,4 @@
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', function (localStorageService) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', function (localStorageService, $q) {
 	'use strict';
 
 	var entryId = localStorageService.get("index");
@@ -30,7 +30,7 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 				}
 			}
 		}
-		return arrAddressBookList;
+		return $q.when(arrAddressBookList);
 	};
 
 	return {

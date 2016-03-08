@@ -28,6 +28,7 @@
   "devDependencies": {
     "angular": "^1.5.0",
     "angular-local-storage": "^0.2.6",
+    "angular-route": "^1.5.0",
     "browserify": "^13.0.0",
     "country-list": "0.0.3",
     "gulp": "^3.9.1",
