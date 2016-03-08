@@ -15,9 +15,14 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 		return objCountryList.getName(code);
 	};
 
+	var getCodeByName = function (name) {
+		return objCountryList.getCode(name);
+	};
+
 	return {
 		getCountryList: getCountryList,
 		setCountryList: setCountryList,
-		getNameByCode: getNameByCode
+		getNameByCode: getNameByCode,
+		getCodeByName: getCodeByName
 	};
 }]);

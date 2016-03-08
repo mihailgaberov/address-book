@@ -1,6 +1,6 @@
 angular.module('address-book')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory',
-		function ($scope, CountryListFactory, ResultEntryFactory) {
+	.controller('FormController', ['$scope', 'CountryListFactory', 'ResultEntryFactory', 'Events',
+		function ($scope, CountryListFactory, ResultEntryFactory, Events) {
 
 			this.countriesData = CountryListFactory.getCountryList();
 
@@ -19,6 +19,13 @@ angular.module('address-book')
 					console.log(">>>>> update entry");
 				}
 			}
+
+			$scope.$on(Events.UPDATE, function (e, arg) {
+				$scope.firstName = arg.firstName;
+				$scope.lastName = arg.lastName;
+				$scope.email = arg.email;
+				$scope.country = CountryListFactory.getCodeByName(arg.country);
+			});
 
 		}])
 	.directive('addressBookForm', function () {

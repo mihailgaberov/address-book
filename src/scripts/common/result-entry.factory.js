@@ -1,4 +1,5 @@
-angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', '$rootScope', function (localStorageService, $q, $rootScope) {
+angular.module('address-book').factory('ResultEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
+	function (localStorageService, $q, $rootScope, Events) {
 	'use strict';
 
 	var entryId = localStorageService.get("index");
@@ -14,19 +15,21 @@ angular.module('address-book').factory('ResultEntryFactory', ['localStorageServi
 			localStorageService.set("index", ++entryId);
 		}
 
-		$rootScope.$broadcast('addNewEntry', entry);
+		$rootScope.$broadcast(Events.ADD, entry);
 	};
 
 	var deleteEntry = function (id, idx) {
 		if (confirm('Are you sure?')) {
 			var key = 'entry:' + id;
 			localStorageService.remove(key);
-			$rootScope.$broadcast('removeEntry', idx);
+			$rootScope.$broadcast(Events.REMOVE, idx);
 		}
 	};
 
 	var editEntry = function (id, idx) {
-		console.log('>>> edit entryId: ', id);
+		var key = 'entry:' + id;
+		var entry = localStorageService.get(key);
+		$rootScope.$broadcast(Events.UPDATE, entry);
 	};
 
 	var getAllEntries = function () {
