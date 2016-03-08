@@ -23,15 +23,6 @@ gulp.task('default', function () {
 	gulp.start('styles', 'scripts', 'browserify');
 });
 
-// Browserify
-gulp.task('browserify', function() {
-	return browserify('./src/scripts/app.js')
-		.bundle()
-		.pipe(source('app.js'))
-		.pipe(gulp.dest('./dist/scripts'))
-		.pipe(notify({message: 'Browserify task complete'}));
-});
-
 // Deploy the styles
 gulp.task('styles', function () {
 	return gulp.src(input.styles, {style: 'expanded'})
@@ -53,6 +44,15 @@ gulp.task('scripts', function () {
 		.pipe(uglify())
 		.pipe(gulp.dest(output.scripts))
 		.pipe(notify({message: 'Scripts task complete'}));
+});
+
+// Browserify
+gulp.task('browserify', ['scripts'], function() {
+	return browserify('./dist/scripts/main.min.js')
+		.bundle()
+		.pipe(source('main.min.js'))
+		.pipe(gulp.dest('./dist/scripts'))
+		.pipe(notify({message: 'Browserify task complete'}));
 });
 
 // Watch
