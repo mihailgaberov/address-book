@@ -6,20 +6,20 @@
   padding: 0; }
   #main-wrapper h1 {
     text-align: center; }
-  #main-wrapper #results-area {
+  #main-wrapper #address-list-area {
     display: block;
     margin-bottom: 20px; }
-    #main-wrapper #results-area #address-book-table {
+    #main-wrapper #address-list-area #address-book-table {
       border: 1px solid #003131;
       color: black; }
-      #main-wrapper #results-area #address-book-table #header {
+      #main-wrapper #address-list-area #address-book-table #header {
         color: white;
         background-color: orange; }
-      #main-wrapper #results-area #address-book-table td {
+      #main-wrapper #address-list-area #address-book-table td {
         width: auto;
         padding: .7em 1em;
         font-size: 0.8em; }
-        #main-wrapper #results-area #address-book-table td:last-child {
+        #main-wrapper #address-list-area #address-book-table td:last-child {
           min-width: 100px; }
   #main-wrapper #form-area {
     display: block; }

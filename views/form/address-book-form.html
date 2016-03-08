@@ -15,7 +15,7 @@
         <label for="country">Country:</label>
         <select id="country" name="country" class="dropdown-input" required ng-model="country">
             <option value="" selected>Please choose country</option>
-            <option ng-repeat="country in countries" value="{{country.code}}">{{country.name}}</option>
+            <option ng-repeat="country in countries" value="{{ country.code }}">{{country.name}}</option>
         </select>
     </div>
     <div class="form-item buttons">

@@ -3,4 +3,4 @@ angular.module('address-book').constant( 'Events', {
     'REMOVE': 'removeEntry',
     'EDIT': 'editEntry',
     'UPDATE':'updateEntry'
-})
+});

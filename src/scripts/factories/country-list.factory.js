@@ -3,7 +3,7 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 
 	var objCountryList = {};
 
-	var setCountryList = function(countries) {
+	var setCountryListService = function(countries) {
 		objCountryList = countries;
 	};
 
@@ -21,7 +21,7 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 
 	return {
 		getCountryList: getCountryList,
-		setCountryList: setCountryList,
+		setCountryListService: setCountryListService,
 		getNameByCode: getNameByCode,
 		getCodeByName: getCodeByName
 	};

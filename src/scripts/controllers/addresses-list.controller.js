@@ -7,16 +7,16 @@ angular.module('address-book')
 			} else {
 				$scope.entries = resolveData;
 			}
-			
-			$scope.$on(Events.ADD, function(e, newEntry) {
+
+			$scope.$on(Events.ADD, function (e, newEntry) {
 				$scope.entries.push(newEntry);
 			});
 
-			$scope.$on(Events.UPDATE, function(e, arrNewEntries) {
+			$scope.$on(Events.UPDATE, function (e, arrNewEntries) {
 				$scope.entries = arrNewEntries;
 			});
 
-			$scope.$on(Events.REMOVE, function(e, entryIdx) {
+			$scope.$on(Events.REMOVE, function (e, entryIdx) {
 				$scope.entries.splice(entryIdx, 1);
 			});
 
@@ -27,6 +27,5 @@ angular.module('address-book')
 			$scope.deleteEntry = function (entryId, idx) {
 				AddressEntryFactory.deleteEntry(entryId, idx);
 			};
-
 		}
 	]);

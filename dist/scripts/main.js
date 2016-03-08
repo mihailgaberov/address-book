@@ -27,7 +27,7 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 	.run(['CountryListFactory', function (CountryListFactory) {
 		// Get the counties data
 		var cl = require('country-list')();
-		CountryListFactory.setCountryList(cl);
+		CountryListFactory.setCountryListService(cl);
 	}]);
 
 angular.module('address-book').constant( 'Events', {
@@ -35,7 +35,91 @@ angular.module('address-book').constant( 'Events', {
     'REMOVE': 'removeEntry',
     'EDIT': 'editEntry',
     'UPDATE':'updateEntry'
-})
+});
+angular.module('address-book')
+	.controller('AddressesListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
+		function (AddressEntryFactory, resolveData, $scope, Events) {
+
+			if (_.isUndefined(resolveData)) {
+				$scope.entries = [];
+			} else {
+				$scope.entries = resolveData;
+			}
+
+			$scope.$on(Events.ADD, function (e, newEntry) {
+				$scope.entries.push(newEntry);
+			});
+
+			$scope.$on(Events.UPDATE, function (e, arrNewEntries) {
+				$scope.entries = arrNewEntries;
+			});
+
+			$scope.$on(Events.REMOVE, function (e, entryIdx) {
+				$scope.entries.splice(entryIdx, 1);
+			});
+
+			$scope.editEntry = function (entryId, idx) {
+				AddressEntryFactory.editEntry(entryId, idx);
+			};
+
+			$scope.deleteEntry = function (entryId, idx) {
+				AddressEntryFactory.deleteEntry(entryId, idx);
+			};
+		}
+	]);
+angular.module('address-book')
+	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
+		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
+
+			this.countriesData = CountryListFactory.getCountryList();
+
+			this.submitForm = function () {
+				var entry = {
+					'firstName': $scope.firstName,
+					'lastName': $scope.lastName,
+					'email': $scope.email,
+					'country': CountryListFactory.getNameByCode($scope.country)
+				};
+
+
+				if ($scope.recordId.value === 0) {
+					AddressEntryFactory.addEntry(entry);
+				} else {
+					AddressEntryFactory.updateEntry($scope.recordId.value, entry);
+				}
+
+				$scope.recordId.value = 0;
+				this.resetForm();
+			};
+
+			this.resetForm = function() {
+				$scope.firstName = '';
+				$scope.lastName = '';
+				$scope.email = '';
+				$scope.country = '';
+			};
+
+			$scope.$on(Events.EDIT, function (e, entry) {
+				$scope.firstName = entry.firstName;
+				$scope.lastName = entry.lastName;
+				$scope.email = entry.email;
+				$scope.country = CountryListFactory.getCodeByName(entry.country);
+				$scope.recordId.value = entry.id;
+			});
+
+		}])
+	.directive('addressBookForm', function () {
+		return {
+			controller: 'FormController',
+			controllerAs: 'fc',
+			restrict: 'E',
+			scope: {},
+			templateUrl: 'views/form/address-book-form.html',
+			link: function (scope, element, attrs, controller) {
+				scope.countries = controller.countriesData;
+			}
+		};
+	});
 angular.module('address-book').factory('AddressEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
 	function (localStorageService, $q, $rootScope, Events) {
 	'use strict';
@@ -107,7 +191,7 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 
 	var objCountryList = {};
 
-	var setCountryList = function(countries) {
+	var setCountryListService = function(countries) {
 		objCountryList = countries;
 	};
 
@@ -125,93 +209,8 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 
 	return {
 		getCountryList: getCountryList,
-		setCountryList: setCountryList,
+		setCountryListService: setCountryListService,
 		getNameByCode: getNameByCode,
 		getCodeByName: getCodeByName
 	};
 }]);
-angular.module('address-book')
-	.controller('AddressesListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
-		function (AddressEntryFactory, resolveData, $scope, Events) {
-
-			if (_.isUndefined(resolveData)) {
-				$scope.entries = [];
-			} else {
-				$scope.entries = resolveData;
-			}
-			
-			$scope.$on(Events.ADD, function(e, newEntry) {
-				$scope.entries.push(newEntry);
-			});
-
-			$scope.$on(Events.UPDATE, function(e, arrNewEntries) {
-				$scope.entries = arrNewEntries;
-			});
-
-			$scope.$on(Events.REMOVE, function(e, entryIdx) {
-				$scope.entries.splice(entryIdx, 1);
-			});
-
-			$scope.editEntry = function (entryId, idx) {
-				AddressEntryFactory.editEntry(entryId, idx);
-			};
-
-			$scope.deleteEntry = function (entryId, idx) {
-				AddressEntryFactory.deleteEntry(entryId, idx);
-			};
-
-		}
-	]);
-angular.module('address-book')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
-		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
-
-			this.countriesData = CountryListFactory.getCountryList();
-
-			this.submitForm = function () {
-				var entry = {
-					'firstName': $scope.firstName,
-					'lastName': $scope.lastName,
-					'email': $scope.email,
-					'country': CountryListFactory.getNameByCode($scope.country)
-				};
-
-
-				if ($scope.recordId.value === 0) {
-					AddressEntryFactory.addEntry(entry);
-				} else {
-					AddressEntryFactory.updateEntry($scope.recordId.value, entry);
-				}
-
-				$scope.recordId.value = 0;
-				this.resetForm();
-			};
-
-			this.resetForm = function() {
-				$scope.firstName = '';
-				$scope.lastName = '';
-				$scope.email = '';
-				$scope.country = '';
-			};
-
-			$scope.$on(Events.EDIT, function (e, entry) {
-				$scope.firstName = entry.firstName;
-				$scope.lastName = entry.lastName;
-				$scope.email = entry.email;
-				$scope.country = CountryListFactory.getCodeByName(entry.country);
-				$scope.recordId.value = entry.id;
-			});
-
-		}])
-	.directive('addressBookForm', function () {
-		return {
-			controller: 'FormController',
-			controllerAs: 'fc',
-			restrict: 'E',
-			scope: {},
-			templateUrl: 'views/form/address-book-form.html',
-			link: function (scope, element, attrs, controller) {
-				scope.countries = controller.countriesData;
-			}
-		};
-	});
