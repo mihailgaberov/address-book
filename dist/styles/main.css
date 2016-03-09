@@ -9,6 +9,10 @@
   #main-wrapper #address-list-area {
     display: block;
     margin-bottom: 20px; }
+    #main-wrapper #address-list-area .welcome-msg {
+      font-size: 1em;
+      text-align: center;
+      color: orange; }
     #main-wrapper #address-list-area #address-book-table {
       border: 1px solid #003131;
       color: black; }

@@ -14,6 +14,13 @@
   #address-list-area {
     display: block;
     margin-bottom: 20px;
+
+    .welcome-msg {
+      font-size: 1em;
+      text-align: center;
+      color: $results-header-background-color;
+    }
+
     #address-book-table {
       border: 1px solid $results-table-border-color;
       color: $results-table-forecolor;

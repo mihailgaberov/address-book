@@ -1,4 +1,5 @@
-<table id="address-book-table">
+<div class="welcome-msg" ng-if="entries.length == 0">Please enter your first record.</div>
+<table id="address-book-table" ng-if="entries.length > 0">
     <tr id="header">
         <th>First Name</th>
         <th>Last Name</th>
