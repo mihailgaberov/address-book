@@ -3,6 +3,8 @@ Client Side Address Book - a SPA (Single Page Application) built with JavaScript
 
 ![Image of the app](https://github.com/mihailgaberov/address-book/blob/master/screenshot.png)
 
+If you don't want to spend time installing, you can check the [live demo](http://mihailgaberov.github.io/).
+
 
 #Functionality
 
