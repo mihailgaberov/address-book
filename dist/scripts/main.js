@@ -6,7 +6,7 @@
  * which can be placed under a common folder in /scripts/ called for example
  * 'modules' or 'components'.
  * */
-var abApp = angular.module('address-book', ['LocalStorageModule', 'ngRoute']);
+var abApp = angular.module('address-book', ['LocalStorageModule', 'ngRoute', 'ngAnimate']);
 
 abApp.config(['localStorageServiceProvider', '$routeProvider', function (localStorageServiceProvider, $routeProvider) {
 	localStorageServiceProvider.setPrefix('address-book');
@@ -30,6 +30,12 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 		CountryListFactory.setCountryListService(cl);
 	}]);
 
+angular.module('address-book').constant( 'Events', {
+    'ADD': 'addNewEntry',
+    'REMOVE': 'removeEntry',
+    'EDIT': 'editEntry',
+    'UPDATE':'updateEntry'
+});
 angular.module('address-book').factory('AddressEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
 	function (localStorageService, $q, $rootScope, Events) {
 	'use strict';
@@ -124,12 +130,6 @@ angular.module('address-book').factory('CountryListFactory', [function() {
 		getCodeByName: getCodeByName
 	};
 }]);
-angular.module('address-book').constant( 'Events', {
-    'ADD': 'addNewEntry',
-    'REMOVE': 'removeEntry',
-    'EDIT': 'editEntry',
-    'UPDATE':'updateEntry'
-});
 angular.module('address-book')
 	.controller('AddressesListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
 		function (AddressEntryFactory, resolveData, $scope, Events) {

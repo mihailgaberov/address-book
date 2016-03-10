@@ -6,7 +6,7 @@
  * which can be placed under a common folder in /scripts/ called for example
  * 'modules' or 'components'.
  * */
-var abApp = angular.module('address-book', ['LocalStorageModule', 'ngRoute']);
+var abApp = angular.module('address-book', ['LocalStorageModule', 'ngRoute', 'ngAnimate']);
 
 abApp.config(['localStorageServiceProvider', '$routeProvider', function (localStorageServiceProvider, $routeProvider) {
 	localStorageServiceProvider.setPrefix('address-book');

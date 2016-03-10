@@ -1,5 +1,8 @@
-<div class="welcome-msg" ng-if="entries.length == 0">Please enter your first record.</div>
-<table id="address-book-table" ng-if="entries.length > 0">
+<div class="welcome-msg" ng-if="entries.length == 0" class="fade">Please enter your first record.</div>
+<div class="form-item">
+    <input class="text-input" type="text" ng-model="search" placeholder="Type here to filter records" />
+</div>
+<table id="address-book-table" ng-if="entries.length > 0" class="fade">
     <tr id="header">
         <th>First Name</th>
         <th>Last Name</th>
@@ -8,7 +11,7 @@
         <th>No</th>
         <th>Options</th>
     </tr>
-    <tr ng-repeat="entry in entries">
+    <tr class="fade" ng-repeat="entry in entries | filter: search">
         <td>{{ entry.firstName }}</td>
         <td>{{ entry.lastName }}</td>
         <td>{{ entry.email }}</td>
