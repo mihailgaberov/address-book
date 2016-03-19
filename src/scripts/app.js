@@ -14,7 +14,7 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 	$routeProvider
 		.when('/', {
 			templateUrl: 'views/address-list/address-list.html',
-			controller: 'AddressesListController',
+			controller: 'AddressListController',
 			resolve: {
 				resolveData: ['AddressEntryFactory', function (AddressEntryFactory) {
 					return AddressEntryFactory.getAllEntries();

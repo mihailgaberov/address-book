@@ -1,5 +1,5 @@
 angular.module('address-book')
-	.controller('AddressesListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
+	.controller('AddressListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
 		function (AddressEntryFactory, resolveData, $scope, Events) {
 
 			if (_.isUndefined(resolveData)) {
