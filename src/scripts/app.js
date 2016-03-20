@@ -6,9 +6,6 @@
  * which can be placed under a common folder in /scripts/ called for example
  * 'modules' or 'components'.
  * */
-var factories = angular.module('address-book-factories', []);
-var controllers = angular.module('address-book-controllers', []);
-
 var abApp = angular.module('address-book',
 	['LocalStorageModule', 'ngRoute', 'ngAnimate', 'address-book-factories', 'address-book-controllers']);
 
