@@ -1,12 +1,14 @@
-angular.module('address-book')
-	.controller('AddressListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
+angular.module('address-book-controllers', []).controller('AddressListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
 		function (AddressEntryFactory, resolveData, $scope, Events) {
 
-			if (_.isUndefined(resolveData)) {
-				$scope.entries = [];
-			} else {
-				$scope.entries = resolveData;
-			}
+			$scope.checkResolvedData = function () {
+				if (_.isUndefined(resolveData)) {
+					$scope.entries = [];
+				} else {
+					$scope.entries = resolveData;
+				}
+			};
+			$scope.checkResolvedData();
 
 			$scope.$on(Events.ADD, function (e, newEntry) {
 				$scope.entries.push(newEntry);

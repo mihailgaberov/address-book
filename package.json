@@ -4,7 +4,7 @@
   "description": "Client side address book",
   "main": "app.js",
   "scripts": {
-    "test": "test"
+    "test": "karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,9 @@
   "homepage": "https://github.com/mihailgaberov/address-book#readme",
   "devDependencies": {
     "angular": "^1.5.0",
+    "angular-animate": "^1.5.2",
     "angular-local-storage": "^0.2.6",
+    "angular-mocks": "^1.5.2",
     "angular-route": "^1.5.0",
     "browserify": "^13.0.0",
     "country-list": "0.0.3",
@@ -39,10 +41,13 @@
     "gulp-sass": "^2.2.0",
     "gulp-uglify": "^1.5.3",
     "gulp-util": "^3.0.7",
+    "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
+    "karma-browserify": "^5.0.2",
     "karma-chrome-launcher": "^0.2.2",
     "karma-jasmine": "^0.3.8",
     "lodash": "^4.6.1",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
   }
 }
