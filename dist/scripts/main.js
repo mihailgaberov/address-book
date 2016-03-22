@@ -7,7 +7,7 @@
  * 'modules' or 'components'.
  * */
 var abApp = angular.module('address-book',
-	['ngRoute', 'ngAnimate', 'addressBookServices', 'addressBookFactories', 'addressBookControllers']);
+	['LocalStorageModule', 'ngRoute', 'ngAnimate', 'addressBookServices', 'addressBookFactories', 'addressBookControllers']);
 
 abApp.config(['localStorageServiceProvider', '$routeProvider', function (localStorageServiceProvider, $routeProvider) {
 	localStorageServiceProvider.setPrefix('address-book');
@@ -17,7 +17,7 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 			templateUrl: 'views/address-list/address-list.html',
 			controller: 'AddressListController',
 			resolve: {
-				resolveData: ['AddressEntryFactory', function (AddressEntryFactory) {
+				addresses: ['AddressEntryFactory', function (AddressEntryFactory) {
 					return AddressEntryFactory.getAllEntries();
 				}]
 			}
@@ -31,17 +31,23 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 		CountryListFactory.setCountryListService(cl);
 	}]);
 
-angular.module('addressBookControllers', []).controller('AddressListController', ['AddressEntryFactory', 'addressBookListResolvedData', '$scope', 'Events',
-		function (AddressEntryFactory, addressBookListResolvedData, $scope, Events) {
+angular.module('address-book').constant( 'Events', {
+    'ADD': 'addNewEntry',
+    'REMOVE': 'removeEntry',
+    'EDIT': 'editEntry',
+    'UPDATE':'updateEntry'
+});
+angular.module('addressBookControllers', []).controller('AddressListController', ['$scope', 'AddressEntryFactory', 'Events', 'addresses',
+		function ($scope, AddressEntryFactory, Events, addresses) {
 
-			$scope.checkAddressBookListData = function () {
-				if (_.isUndefined(addressBookListResolvedData)) {
+			$scope.checkAddressesData = function () {
+				if (_.isUndefined(addresses)) {
 					$scope.entries = [];
 				} else {
-					$scope.entries = addressBookListResolvedData;
+					$scope.entries = addresses;
 				}
 			};
-			$scope.checkAddressBookListData();
+			$scope.checkAddressesData();
 
 			$scope.$on(Events.ADD, function (e, newEntry) {
 				$scope.entries.push(newEntry);
@@ -117,25 +123,27 @@ angular.module('addressBookControllers')
 			}
 		};
 	});
-angular.module('addressBookFactories', []).factory('AddressEntryFactory', ['storage', '$q', '$rootScope', 'Events',
-	function (storage, $q, $rootScope, Events) {
+angular.module('addressBookFactories', []).factory('AddressEntryFactory', ['$rootScope', '$q', 'storage', 'Events', 
+	function ($rootScope, $q, storage, Events) {
 	'use strict';
 
-	var entryId = storage.get("index");
+	var	ls = storage.getLocalStorageService();
+
+	var entryId = ls.get("index");
 
 	var getKey = function(id) {
 		return 'entry:' + id;
 	};
 
 	var addEntry = function (entry) {
-		if (storage.isSupported) {
+		if (ls.isSupported) {
 			if (!entryId) {
-				storage.set("index", entryId = 1);
+				ls.set("index", entryId = 1);
 			}
 
 			entry.id = entryId;
-			storage.set('entry:' + entryId, entry);
-			storage.set("index", ++entryId);
+			ls.set('entry:' + entryId, entry);
+			ls.set("index", ++entryId);
 		}
 
 		$rootScope.$broadcast(Events.ADD, entry);
@@ -143,32 +151,32 @@ angular.module('addressBookFactories', []).factory('AddressEntryFactory', ['stor
 
 	var deleteEntry = function (id, idx) {
 		if (confirm('Are you sure?')) {
-			storage.remove(getKey(id));
+			ls.remove(getKey(id));
 			$rootScope.$broadcast(Events.REMOVE, idx);
 		}
 	};
 
 	var editEntry = function (id, idx) {
-		var entry = storage.get(getKey(id));
+		var entry = ls.get(getKey(id));
 		$rootScope.$broadcast(Events.EDIT, entry);
 	};
 
 	var updateEntry = function(id, entry) {
 		entry.id = id;
-		storage.set(getKey(id), entry);
+		ls.set(getKey(id), entry);
 		getAllEntries().then(function(entries) {
 			$rootScope.$broadcast(Events.UPDATE, entries);
 		});
 	};
 
 	var getAllEntries = function () {
-		var lcLength = storage.length();
+		var lcLength = ls.length();
 		if (lcLength - 1) {
-			var arrAddressBookList = [], i, keys = storage.keys();
+			var arrAddressBookList = [], i, keys = ls.keys();
 
 			for (i = 0; i < keys.length; i++) {
 				if (/entry.\d+/.test(keys[i])) {
-					arrAddressBookList.push(storage.get(keys[i]));
+					arrAddressBookList.push(ls.get(keys[i]));
 				}
 			}
 		}
@@ -212,16 +220,10 @@ angular.module('addressBookFactories').factory('CountryListFactory', [function()
 		getCodeByName: getCodeByName
 	};
 }]);
-angular.module('addressBookServices', []).service('stogare', ['LocalStorageModule', function (localStorageService) {
+angular.module('addressBookServices', []).service('storage', ['localStorageService', function (localStorageService) {
+	'use strict';
 
-	var stogare = new localStorageService();
-
-	return storage;
-
+	this.getLocalStorageService = function () {
+		return localStorageService;
+	}
 }]);
-angular.module('address-book').constant( 'Events', {
-    'ADD': 'addNewEntry',
-    'REMOVE': 'removeEntry',
-    'EDIT': 'editEntry',
-    'UPDATE':'updateEntry'
-});

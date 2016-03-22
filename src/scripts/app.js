@@ -7,7 +7,7 @@
  * 'modules' or 'components'.
  * */
 var abApp = angular.module('address-book',
-	['ngRoute', 'ngAnimate', 'addressBookServices', 'addressBookFactories', 'addressBookControllers']);
+	['LocalStorageModule', 'ngRoute', 'ngAnimate', 'addressBookServices', 'addressBookFactories', 'addressBookControllers']);
 
 abApp.config(['localStorageServiceProvider', '$routeProvider', function (localStorageServiceProvider, $routeProvider) {
 	localStorageServiceProvider.setPrefix('address-book');
@@ -17,7 +17,7 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 			templateUrl: 'views/address-list/address-list.html',
 			controller: 'AddressListController',
 			resolve: {
-				resolveData: ['AddressEntryFactory', function (AddressEntryFactory) {
+				addresses: ['AddressEntryFactory', function (AddressEntryFactory) {
 					return AddressEntryFactory.getAllEntries();
 				}]
 			}

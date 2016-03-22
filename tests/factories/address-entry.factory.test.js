@@ -11,9 +11,9 @@ describe('AddressEntryFactory:', function () {
 	};
 
 	beforeEach(function () {
-		module('address-book-factories');
+		module('addressBookFactories');
 		module(function($provide) {
-			$provide.service('localStorageService', function () {
+			$provide.service('storage', function () {
 				return {
 					length: function() {
 						return 1;
