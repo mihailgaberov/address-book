@@ -1,6 +1,6 @@
 describe('AddressEntryFactory:', function () {
 
-	var $factory;
+	var addressEntryFactory;
 
 	var mockedRecord = {
 		'id': '1',
@@ -12,56 +12,53 @@ describe('AddressEntryFactory:', function () {
 
 	beforeEach(function () {
 		module('addressBookFactories');
-		module(function($provide) {
+		
+		module(function ($provide) {
 			$provide.service('storage', function () {
 				return {
-					length: function() {
-						return 1;
-					},
-					set: function () {
-						console.log('>>> set local storage');
-					},
-					get: function () {
-						console.log('>>> get local storage');
+					getLocalStorageService: function () {
+						return {
+							length: function() {
+								return 1;
+							},
+							set: function () {
+								console.log('>>> set local storage');
+							},
+							get: function () {
+								console.log('>>> get local storage');
+							}
+						};
 					}
 				};
 			});
 		});
+		
 		module(function ($provide) {
-			$provide.constant('Events', function () {
-				return {
+			$provide.constant('Events', {
 					'ADD': 'addNewEntry',
 					'REMOVE': 'removeEntry',
 					'EDIT': 'editEntry',
 					'UPDATE':'updateEntry'
-				}
 			});
 		});
 	});
 
 	beforeEach(inject(function(_AddressEntryFactory_){
-		$factory = _AddressEntryFactory_;
-
-		spyOn($factory, 'addEntry');
-
-		$factory.addEntry(mockedRecord);
+		addressEntryFactory = _AddressEntryFactory_;
 	}));
 
-	it("creates spies for each requested function", function() {
-		expect($factory.getKey).toBeDefined();
-		expect($factory.addEntry).toBeDefined();
-		expect($factory.deleteEntry).toBeDefined();
-		expect($factory.editEntry).toBeDefined();
-		expect($factory.updateEntry).toBeDefined();
-		expect($factory.getAllEntries).toBeDefined();
-	});
+	beforeEach(inject(function($injector){
+		rootScope = $injector.get('$rootScope');
+		spyOn(rootScope, '$broadcast');
+	}));
 
 	it('getKey() should return a key used in the local storage by given id', function () {
-		var key = $factory.getKey(1);
+		var key = addressEntryFactory.getKey(1);
 		expect(key).toEqual('entry:1');
 	});
 
-	it('addEntry() should be called with a record object', function () {
-		expect($factory.addEntry).toHaveBeenCalledWith(mockedRecord);
+	it('should broadcast ADD event when adding new record', function () {
+		addressEntryFactory.addEntry(mockedRecord);
+		expect(rootScope.$broadcast).toHaveBeenCalledWith('addNewEntry', mockedRecord);
 	});
 });
