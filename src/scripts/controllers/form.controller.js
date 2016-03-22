@@ -1,4 +1,4 @@
-angular.module('address-book-controllers')
+angular.module('addressBookControllers')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
 		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
 
