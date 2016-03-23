@@ -1,4 +1,4 @@
-angular.module('address-book').factory('CountryListFactory', [function() {
+angular.module('addressBookFactories').factory('CountryListFactory', [function() {
 	'use strict';
 
 	var objCountryList = {};

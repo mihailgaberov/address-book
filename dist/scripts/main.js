@@ -6,7 +6,8 @@
  * which can be placed under a common folder in /scripts/ called for example
  * 'modules' or 'components'.
  * */
-var abApp = angular.module('address-book', ['LocalStorageModule', 'ngRoute']);
+var abApp = angular.module('address-book',
+	['LocalStorageModule', 'ngRoute', 'ngAnimate', 'addressBookServices', 'addressBookFactories', 'addressBookControllers']);
 
 abApp.config(['localStorageServiceProvider', '$routeProvider', function (localStorageServiceProvider, $routeProvider) {
 	localStorageServiceProvider.setPrefix('address-book');
@@ -14,9 +15,9 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 	$routeProvider
 		.when('/', {
 			templateUrl: 'views/address-list/address-list.html',
-			controller: 'AddressesListController',
+			controller: 'AddressListController',
 			resolve: {
-				resolveData: ['AddressEntryFactory', function (AddressEntryFactory) {
+				addresses: ['AddressEntryFactory', function (AddressEntryFactory) {
 					return AddressEntryFactory.getAllEntries();
 				}]
 			}
@@ -30,115 +31,23 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 		CountryListFactory.setCountryListService(cl);
 	}]);
 
-angular.module('address-book').factory('AddressEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
-	function (localStorageService, $q, $rootScope, Events) {
-	'use strict';
-
-	var entryId = localStorageService.get("index");
-
-	var getKey = function(id) {
-		return 'entry:' + id;
-	};
-
-	var addEntry = function (entry) {
-		if (localStorageService.isSupported) {
-			if (!entryId) {
-				localStorageService.set("index", entryId = 1);
-			}
-
-			entry.id = entryId;
-			localStorageService.set('entry:' + entryId, entry);
-			localStorageService.set("index", ++entryId);
-		}
-
-		$rootScope.$broadcast(Events.ADD, entry);
-	};
-
-	var deleteEntry = function (id, idx) {
-		if (confirm('Are you sure?')) {
-			localStorageService.remove(getKey(id));
-			$rootScope.$broadcast(Events.REMOVE, idx);
-		}
-	};
-
-	var editEntry = function (id, idx) {
-		var entry = localStorageService.get(getKey(id));
-		$rootScope.$broadcast(Events.EDIT, entry);
-	};
-
-	var updateEntry = function(id, entry) {
-		entry.id = id;
-		localStorageService.set(getKey(id), entry);
-		getAllEntries().then(function(entries) {
-			$rootScope.$broadcast(Events.UPDATE, entries);
-		});
-	};
-
-	var getAllEntries = function () {
-		var lcLength = localStorageService.length();
-		if (lcLength - 1) {
-			var arrAddressBookList = [], i, keys = localStorageService.keys();
-
-			for (i = 0; i < keys.length; i++) {
-				if (/entry.\d+/.test(keys[i])) {
-					arrAddressBookList.push(localStorageService.get(keys[i]));
-				}
-			}
-		}
-		return $q.when(arrAddressBookList);
-	};
-
-	return {
-		addEntry: addEntry,
-		getAllEntries: getAllEntries,
-		editEntry: editEntry,
-		updateEntry: updateEntry,
-		deleteEntry: deleteEntry
-	};
-}]);
-angular.module('address-book').factory('CountryListFactory', [function() {
-	'use strict';
-
-	var objCountryList = {};
-
-	var setCountryListService = function(countries) {
-		objCountryList = countries;
-	};
-
-	var getCountryList = function() {
-		return objCountryList.getData();
-	};
-
-	var getNameByCode = function(code) {
-		return objCountryList.getName(code);
-	};
-
-	var getCodeByName = function (name) {
-		return objCountryList.getCode(name);
-	};
-
-	return {
-		getCountryList: getCountryList,
-		setCountryListService: setCountryListService,
-		getNameByCode: getNameByCode,
-		getCodeByName: getCodeByName
-	};
-}]);
 angular.module('address-book').constant( 'Events', {
     'ADD': 'addNewEntry',
     'REMOVE': 'removeEntry',
     'EDIT': 'editEntry',
     'UPDATE':'updateEntry'
 });
-angular.module('address-book')
-	.controller('AddressesListController', ['AddressEntryFactory', 'resolveData', '$scope', 'Events',
-		function (AddressEntryFactory, resolveData, $scope, Events) {
+angular.module('addressBookControllers', []).controller('AddressListController', ['$scope', 'AddressEntryFactory', 'Events', 'addresses',
+		function ($scope, AddressEntryFactory, Events, addresses) {
 
-			if (_.isUndefined(resolveData)) {
-				$scope.entries = [];
-			} else {
-				$scope.entries = resolveData;
-			}
+			$scope.checkAddressesData = function () {
+				if (_.isUndefined(addresses)) {
+					$scope.entries = [];
+				} else {
+					$scope.entries = addresses;
+				}
+			};
+			$scope.checkAddressesData();
 
 			$scope.$on(Events.ADD, function (e, newEntry) {
 				$scope.entries.push(newEntry);
@@ -161,7 +70,7 @@ angular.module('address-book')
 			};
 		}
 	]);
-angular.module('address-book')
+angular.module('addressBookControllers')
 	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
 		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
 
@@ -214,3 +123,107 @@ angular.module('address-book')
 			}
 		};
 	});
+angular.module('addressBookFactories', []).factory('AddressEntryFactory', ['$rootScope', '$q', 'storage', 'Events', 
+	function ($rootScope, $q, storage, Events) {
+	'use strict';
+
+	var	ls = storage.getLocalStorageService();
+
+	var entryId = ls.get("index");
+
+	var getKey = function(id) {
+		return 'entry:' + id;
+	};
+
+	var addEntry = function (entry) {
+		if (ls.isSupported) {
+			if (!entryId) {
+				ls.set("index", entryId = 1);
+			}
+
+			entry.id = entryId;
+			ls.set('entry:' + entryId, entry);
+			ls.set("index", ++entryId);
+		}
+
+		$rootScope.$broadcast(Events.ADD, entry);
+	};
+
+	var deleteEntry = function (id, idx) {
+		if (confirm('Are you sure?')) {
+			ls.remove(getKey(id));
+			$rootScope.$broadcast(Events.REMOVE, idx);
+		}
+	};
+
+	var editEntry = function (id, idx) {
+		var entry = ls.get(getKey(id));
+		$rootScope.$broadcast(Events.EDIT, entry);
+	};
+
+	var updateEntry = function(id, entry) {
+		entry.id = id;
+		ls.set(getKey(id), entry);
+		getAllEntries().then(function(entries) {
+			$rootScope.$broadcast(Events.UPDATE, entries);
+		});
+	};
+
+	var getAllEntries = function () {
+		var lcLength = ls.length();
+		if (lcLength - 1) {
+			var arrAddressBookList = [], i, keys = ls.keys();
+
+			for (i = 0; i < keys.length; i++) {
+				if (/entry.\d+/.test(keys[i])) {
+					arrAddressBookList.push(ls.get(keys[i]));
+				}
+			}
+		}
+		return $q.when(arrAddressBookList);
+	};
+
+	return {
+		addEntry: addEntry,
+		getAllEntries: getAllEntries,
+		editEntry: editEntry,
+		updateEntry: updateEntry,
+		deleteEntry: deleteEntry,
+		getKey: getKey
+	};
+}]);
+angular.module('addressBookFactories').factory('CountryListFactory', [function() {
+	'use strict';
+
+	var objCountryList = {};
+
+	var setCountryListService = function(countries) {
+		objCountryList = countries;
+	};
+
+	var getCountryList = function() {
+		return objCountryList.getData();
+	};
+
+	var getNameByCode = function(code) {
+		return objCountryList.getName(code);
+	};
+
+	var getCodeByName = function (name) {
+		return objCountryList.getCode(name);
+	};
+
+	return {
+		getCountryList: getCountryList,
+		setCountryListService: setCountryListService,
+		getNameByCode: getNameByCode,
+		getCodeByName: getCodeByName
+	};
+}]);
+angular.module('addressBookServices', []).service('storage', ['localStorageService', function (localStorageService) {
+	'use strict';
+
+	this.getLocalStorageService = function () {
+		return localStorageService;
+	}
+}]);

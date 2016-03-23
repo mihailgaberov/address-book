@@ -1,22 +1,24 @@
-angular.module('address-book').factory('AddressEntryFactory', ['localStorageService', '$q', '$rootScope', 'Events',
-	function (localStorageService, $q, $rootScope, Events) {
+angular.module('addressBookFactories', []).factory('AddressEntryFactory', ['$rootScope', '$q', 'storage', 'Events', 
+	function ($rootScope, $q, storage, Events) {
 	'use strict';
 
-	var entryId = localStorageService.get("index");
+	var	ls = storage.getLocalStorageService();
+
+	var entryId = ls.get("index");
 
 	var getKey = function(id) {
 		return 'entry:' + id;
 	};
 
 	var addEntry = function (entry) {
-		if (localStorageService.isSupported) {
+		if (ls.isSupported) {
 			if (!entryId) {
-				localStorageService.set("index", entryId = 1);
+				ls.set("index", entryId = 1);
 			}
 
 			entry.id = entryId;
-			localStorageService.set('entry:' + entryId, entry);
-			localStorageService.set("index", ++entryId);
+			ls.set('entry:' + entryId, entry);
+			ls.set("index", ++entryId);
 		}
 
 		$rootScope.$broadcast(Events.ADD, entry);
@@ -24,32 +26,32 @@ angular.module('address-book').factory('AddressEntryFactory', ['localStorageServ
 
 	var deleteEntry = function (id, idx) {
 		if (confirm('Are you sure?')) {
-			localStorageService.remove(getKey(id));
+			ls.remove(getKey(id));
 			$rootScope.$broadcast(Events.REMOVE, idx);
 		}
 	};
 
 	var editEntry = function (id, idx) {
-		var entry = localStorageService.get(getKey(id));
+		var entry = ls.get(getKey(id));
 		$rootScope.$broadcast(Events.EDIT, entry);
 	};
 
 	var updateEntry = function(id, entry) {
 		entry.id = id;
-		localStorageService.set(getKey(id), entry);
+		ls.set(getKey(id), entry);
 		getAllEntries().then(function(entries) {
 			$rootScope.$broadcast(Events.UPDATE, entries);
 		});
 	};
 
 	var getAllEntries = function () {
-		var lcLength = localStorageService.length();
+		var lcLength = ls.length();
 		if (lcLength - 1) {
-			var arrAddressBookList = [], i, keys = localStorageService.keys();
+			var arrAddressBookList = [], i, keys = ls.keys();
 
 			for (i = 0; i < keys.length; i++) {
 				if (/entry.\d+/.test(keys[i])) {
-					arrAddressBookList.push(localStorageService.get(keys[i]));
+					arrAddressBookList.push(ls.get(keys[i]));
 				}
 			}
 		}
@@ -61,6 +63,7 @@ angular.module('address-book').factory('AddressEntryFactory', ['localStorageServ
 		getAllEntries: getAllEntries,
 		editEntry: editEntry,
 		updateEntry: updateEntry,
-		deleteEntry: deleteEntry
+		deleteEntry: deleteEntry,
+		getKey: getKey
 	};
 }]);
