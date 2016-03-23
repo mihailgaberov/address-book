@@ -31,98 +31,6 @@ abApp.config(['localStorageServiceProvider', '$routeProvider', function (localSt
 		CountryListFactory.setCountryListService(cl);
 	}]);
 
-angular.module('address-book').constant( 'Events', {
-    'ADD': 'addNewEntry',
-    'REMOVE': 'removeEntry',
-    'EDIT': 'editEntry',
-    'UPDATE':'updateEntry'
-});
-angular.module('addressBookControllers', []).controller('AddressListController', ['$scope', 'AddressEntryFactory', 'Events', 'addresses',
-		function ($scope, AddressEntryFactory, Events, addresses) {
-
-			$scope.checkAddressesData = function () {
-				if (_.isUndefined(addresses)) {
-					$scope.entries = [];
-				} else {
-					$scope.entries = addresses;
-				}
-			};
-			$scope.checkAddressesData();
-
-			$scope.$on(Events.ADD, function (e, newEntry) {
-				$scope.entries.push(newEntry);
-			});
-
-			$scope.$on(Events.UPDATE, function (e, arrNewEntries) {
-				$scope.entries = arrNewEntries;
-			});
-
-			$scope.$on(Events.REMOVE, function (e, entryIdx) {
-				$scope.entries.splice(entryIdx, 1);
-			});
-
-			$scope.editEntry = function (entryId, idx) {
-				AddressEntryFactory.editEntry(entryId, idx);
-			};
-
-			$scope.deleteEntry = function (entryId, idx) {
-				AddressEntryFactory.deleteEntry(entryId, idx);
-			};
-		}
-	]);
-angular.module('addressBookControllers')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
-		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
-
-			this.countriesData = CountryListFactory.getCountryList();
-
-			this.submitForm = function () {
-				var entry = {
-					'firstName': $scope.firstName,
-					'lastName': $scope.lastName,
-					'email': $scope.email,
-					'country': CountryListFactory.getNameByCode($scope.country)
-				};
-
-
-				if ($scope.recordId.value === 0) {
-					AddressEntryFactory.addEntry(entry);
-				} else {
-					AddressEntryFactory.updateEntry($scope.recordId.value, entry);
-				}
-
-				$scope.recordId.value = 0;
-				this.resetForm();
-			};
-
-			this.resetForm = function() {
-				$scope.firstName = '';
-				$scope.lastName = '';
-				$scope.email = '';
-				$scope.country = '';
-			};
-
-			$scope.$on(Events.EDIT, function (e, entry) {
-				$scope.firstName = entry.firstName;
-				$scope.lastName = entry.lastName;
-				$scope.email = entry.email;
-				$scope.country = CountryListFactory.getCodeByName(entry.country);
-				$scope.recordId.value = entry.id;
-			});
-
-		}])
-	.directive('addressBookForm', function () {
-		return {
-			controller: 'FormController',
-			controllerAs: 'fc',
-			restrict: 'E',
-			scope: {},
-			templateUrl: 'views/form/address-book-form.html',
-			link: function (scope, element, attrs, controller) {
-				scope.countries = controller.countriesData;
-			}
-		};
-	});
 angular.module('addressBookFactories', []).factory('AddressEntryFactory', ['$rootScope', '$q', 'storage', 'Events', 
 	function ($rootScope, $q, storage, Events) {
 	'use strict';
@@ -220,6 +128,25 @@ angular.module('addressBookFactories').factory('CountryListFactory', [function()
 		getCodeByName: getCodeByName
 	};
 }]);
+angular.module('addressBookFactories').factory('Utils', [function() {
+	'use strict';
+
+	var validateEmail = function (email) {
+    	var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    	return re.test(email);
+	};
+
+
+	return {
+		validateEmail: validateEmail,
+	};
+}]);
+angular.module('address-book').constant( 'Events', {
+    'ADD': 'addNewEntry',
+    'REMOVE': 'removeEntry',
+    'EDIT': 'editEntry',
+    'UPDATE':'updateEntry'
+});
 angular.module('addressBookServices', []).service('storage', ['localStorageService', function (localStorageService) {
 	'use strict';
 
@@ -227,3 +154,95 @@ angular.module('addressBookServices', []).service('storage', ['localStorageServi
 		return localStorageService;
 	}
 }]);
+angular.module('addressBookControllers', []).controller('AddressListController', ['$scope', 'AddressEntryFactory', 'Events', 'addresses',
+		function ($scope, AddressEntryFactory, Events, addresses) {
+
+			$scope.checkAddressesData = function () {
+				if (_.isUndefined(addresses)) {
+					$scope.entries = [];
+				} else {
+					$scope.entries = addresses;
+				}
+			};
+			$scope.checkAddressesData();
+
+			$scope.$on(Events.ADD, function (e, newEntry) {
+				$scope.entries.push(newEntry);
+			});
+
+			$scope.$on(Events.UPDATE, function (e, arrNewEntries) {
+				$scope.entries = arrNewEntries;
+			});
+
+			$scope.$on(Events.REMOVE, function (e, entryIdx) {
+				$scope.entries.splice(entryIdx, 1);
+			});
+
+			$scope.editEntry = function (entryId, idx) {
+				AddressEntryFactory.editEntry(entryId, idx);
+			};
+
+			$scope.deleteEntry = function (entryId, idx) {
+				AddressEntryFactory.deleteEntry(entryId, idx);
+			};
+		}
+	]);
+angular.module('addressBookControllers')
+	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Utils', 'Events',
+		function ($scope, CountryListFactory, AddressEntryFactory, Utils, Events) {
+
+			this.countriesData = CountryListFactory.getCountryList();
+
+			this.submitForm = function () {
+				if (Utils.validateEmail($scope.email)) {
+					var entry = {
+					'firstName': $scope.firstName,
+					'lastName': $scope.lastName,
+						'email': $scope.email,
+						'country': CountryListFactory.getNameByCode($scope.country)
+					};
+
+
+				if ($scope.recordId.value === 0) {
+					AddressEntryFactory.addEntry(entry);
+				} else {
+					AddressEntryFactory.updateEntry($scope.recordId.value, entry);
+				}
+
+				$scope.recordId.value = 0;
+				this.resetForm();
+				} else {
+					alert('Please enter valid email');
+				}
+
+				
+			};
+
+			this.resetForm = function() {
+				$scope.firstName = '';
+				$scope.lastName = '';
+				$scope.email = '';
+				$scope.country = '';
+			};
+
+			$scope.$on(Events.EDIT, function (e, entry) {
+				$scope.firstName = entry.firstName;
+				$scope.lastName = entry.lastName;
+				$scope.email = entry.email;
+				$scope.country = CountryListFactory.getCodeByName(entry.country);
+				$scope.recordId.value = entry.id;
+			});
+
+		}])
+	.directive('addressBookForm', function () {
+		return {
+			controller: 'FormController',
+			controllerAs: 'fc',
+			restrict: 'E',
+			scope: {},
+			templateUrl: 'views/form/address-book-form.html',
+			link: function (scope, element, attrs, controller) {
+				scope.countries = controller.countriesData;
+			}
+		};
+	});

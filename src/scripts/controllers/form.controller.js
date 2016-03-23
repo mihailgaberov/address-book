@@ -1,16 +1,17 @@
 angular.module('addressBookControllers')
-	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Events',
-		function ($scope, CountryListFactory, AddressEntryFactory, Events) {
+	.controller('FormController', ['$scope', 'CountryListFactory', 'AddressEntryFactory', 'Utils', 'Events',
+		function ($scope, CountryListFactory, AddressEntryFactory, Utils, Events) {
 
 			this.countriesData = CountryListFactory.getCountryList();
 
 			this.submitForm = function () {
-				var entry = {
+				if (Utils.validateEmail($scope.email)) {
+					var entry = {
 					'firstName': $scope.firstName,
 					'lastName': $scope.lastName,
-					'email': $scope.email,
-					'country': CountryListFactory.getNameByCode($scope.country)
-				};
+						'email': $scope.email,
+						'country': CountryListFactory.getNameByCode($scope.country)
+					};
 
 
 				if ($scope.recordId.value === 0) {
@@ -21,6 +22,11 @@ angular.module('addressBookControllers')
 
 				$scope.recordId.value = 0;
 				this.resetForm();
+				} else {
+					alert('Please enter valid email');
+				}
+
+				
 			};
 
 			this.resetForm = function() {
