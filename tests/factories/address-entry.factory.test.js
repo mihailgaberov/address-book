@@ -18,21 +18,17 @@ describe('AddressEntryFactory:', function () {
 				return {
 					getLocalStorageService: function () {
 						return {
-							length: function() {
-								return 1;
-							},
-							set: function () {
-								console.log('>>> set local storage');
-							},
-							get: function () {
-								console.log('>>> get local storage');
-							}
+							set: function () {},
+							get: function () {},
+							remove: function () {}
 						};
 					}
 				};
 			});
 		});
-		
+	});
+
+	beforeEach(function () {
 		module(function ($provide) {
 			$provide.constant('Events', {
 					'ADD': 'addNewEntry',
@@ -60,5 +56,15 @@ describe('AddressEntryFactory:', function () {
 	it('should broadcast ADD event when adding new record', function () {
 		addressEntryFactory.addEntry(mockedRecord);
 		expect(rootScope.$broadcast).toHaveBeenCalledWith('addNewEntry', mockedRecord);
+	});
+
+	it('should broadcast EDIT event when editEntry is called', function () {
+		addressEntryFactory.editEntry(1, 1);
+		expect(rootScope.$broadcast).toHaveBeenCalledWith('editEntry', undefined);
+	});
+
+	it('should broadcast REMOVE event when deleting a record is confirmed', function () {
+		addressEntryFactory.deleteEntry(1, 1);
+		expect(rootScope.$broadcast).toHaveBeenCalledWith('removeEntry', 1);
 	});
 });
